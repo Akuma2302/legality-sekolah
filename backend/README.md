@@ -1,8 +1,8 @@
 # Legality Sekolah Tengah — Backend
 
 Node.js + Express API, deployed on Render. Talks to MongoDB via Mongoose.
-Authentication is handled entirely in this backend (email + password, JWT
-sessions) — there's no external auth provider.
+Authentication is handled entirely in this backend (username + password, JWT
+sessions) — there's no external auth provider, and no public signup.
 
 ## Folder structure
 
@@ -21,7 +21,7 @@ backend/
 │   ├── app.js          # Express app setup (middleware, routes, error handling)
 │   └── server.js       # Entry point — connects to MongoDB, then starts the HTTP server
 ├── scripts/
-│   └── createAdmin.js  # CLI: promote an existing account to admin
+│   └── seedAdmin.js    # CLI: create/update the admin account
 ├── .env / .env.example
 ├── .gitignore
 ├── package.json
@@ -47,42 +47,58 @@ Client → Routes → Middleware (auth, only on the one protected route) → Con
 - **Everything under `/api/schools`, `/api/teachers`, `/api/mom-notes` is public** —
   no login required. This matches the frontend: the user portal has no accounts,
   so anyone with the link can view, add, and edit school records. There's no
-  ownership concept anymore (no `owner_id` on schools) — it's one shared pool
-  of records.
+  ownership concept (no `owner_id` on schools) — it's one shared pool of records.
 - **`PATCH /api/schools/:id/legality-status` is the one protected route** — it
   requires an admin login (`requireAuth` + `requireAdmin`). This is the only
   thing an admin account actually gates.
-- Admin accounts exist purely to log into the admin portal (dashboard + the
-  Legality Status control). They're created via `/api/auth/signup` and
-  promoted with the script below — see [Authentication](#authentication).
+- There's exactly one kind of account in this system: admin. There's no public
+  signup — accounts are only ever created with the seed script below.
 
 ## Authentication
 
 There's no Supabase Auth (or any external provider) — this backend issues its
 own JWTs, used only for admin login:
 
-1. `POST /api/auth/signup` — hashes the password with bcrypt, creates a `User`
-   document (`role: 'user'` by default), returns `{ token, user }`.
-2. `POST /api/auth/signin` — verifies the password, returns `{ token, user }`.
-3. The frontend stores the token and sends it as `Authorization: Bearer <token>`
+1. `POST /api/auth/signin` — takes `{ username, password }`, verifies the
+   password against the stored hash, returns `{ token, user }`.
+2. The frontend stores the token and sends it as `Authorization: Bearer <token>`
    on every request. `requireAuth` middleware verifies it and loads the user —
    but as noted above, almost nothing actually requires it.
 
-### Making someone an admin
+There is deliberately no `POST /signup` route — the only way to create or
+reset an admin account is the seed script below, run by whoever controls the
+deployment.
+
+### Creating the admin account
 
 ```bash
-npm run create-admin -- someone@example.com
+npm run seed-admin
 ```
 
-This flips their `role` to `admin` directly in MongoDB. Run it from the
-`backend/` folder with your `.env` (or Render env vars) in place.
+With no arguments, this creates (or resets the password for) the default
+account:
+
+- **username:** `adminlegality`
+- **password:** `leg@lity!admin`
+
+To use different credentials instead:
+
+```bash
+npm run seed-admin -- someUsername someP@ssword
+```
+
+It's idempotent (upserts on username), so re-running it is a safe way to
+reset a forgotten password too. Run it from the `backend/` folder with your
+`.env` (or Render env vars) in place — see `../DEPLOYMENT.md` for running it
+against your deployed database.
 
 ## Local development
 
 ```bash
 cp .env.example .env   # fill in your MongoDB + JWT values
 npm install
-npm run dev              # http://localhost:4000
+npm run seed-admin       # create the admin account (see above)
+npm run dev               # http://localhost:4000
 ```
 
 See `../DEPLOYMENT.md` for deploying this to Render with MongoDB Atlas.

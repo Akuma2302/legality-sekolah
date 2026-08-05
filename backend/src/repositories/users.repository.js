@@ -1,8 +1,8 @@
 import { User } from '../models/user.model.js';
 
 export const usersRepository = {
-  async findByEmail(email) {
-    return User.findOne({ email: email.toLowerCase().trim() });
+  async findByUsername(username) {
+    return User.findOne({ username: username.toLowerCase().trim() });
   },
 
   async findById(id) {
@@ -13,7 +13,12 @@ export const usersRepository = {
     }
   },
 
-  async create({ email, password_hash, full_name }) {
-    return User.create({ email, password_hash, full_name, role: 'user' });
+  /** Only used by scripts/seedAdmin.js — there's no public signup endpoint. */
+  async upsertAdmin({ username, password_hash, full_name }) {
+    return User.findOneAndUpdate(
+      { username: username.toLowerCase().trim() },
+      { username: username.toLowerCase().trim(), password_hash, full_name, role: 'admin' },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
+    );
   },
 };

@@ -21,18 +21,11 @@ export function AuthProvider({ children }) {
       });
   }, []);
 
-  const signIn = async (email, password) => {
-    const { token, user: signedInUser } = await api.signin({ email, password });
+  const signIn = async (username, password) => {
+    const { token, user: signedInUser } = await api.signin({ username, password });
     authToken.set(token);
     setUser(signedInUser);
     return signedInUser;
-  };
-
-  const signUp = async (email, password, full_name) => {
-    const { token, user: newUser } = await api.signup({ email, password, full_name });
-    authToken.set(token);
-    setUser(newUser);
-    return newUser;
   };
 
   const signOut = () => {
@@ -47,7 +40,6 @@ export function AuthProvider({ children }) {
     role: user?.role,
     fullName: user?.full_name,
     signIn,
-    signUp,
     signOut,
   };
 

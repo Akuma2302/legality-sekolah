@@ -5,7 +5,7 @@ import { asyncHandler } from '../utils/asyncHandler.js';
 
 const router = express.Router();
 
-router.post('/signup', asyncHandler(authController.signup));
+// No POST /signup — admin accounts are only ever created via scripts/seedAdmin.js
 router.post('/signin', asyncHandler(authController.signin));
 router.get('/me', requireAuth, asyncHandler(authController.me));
 

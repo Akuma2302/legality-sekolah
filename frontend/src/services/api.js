@@ -25,8 +25,7 @@ async function request(path, options = {}) {
 }
 
 export const api = {
-  // Auth
-  signup: (payload) => request('/api/auth/signup', { method: 'POST', body: JSON.stringify(payload) }),
+  // Auth — sign-in only, no public signup
   signin: (payload) => request('/api/auth/signin', { method: 'POST', body: JSON.stringify(payload) }),
   me: () => request('/api/auth/me'),
 
