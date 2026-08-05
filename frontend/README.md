@@ -1,8 +1,11 @@
 # Legality Sekolah Tengah — Frontend
 
-React + Vite + Tailwind, deployed on Netlify. Two portals in one app: a user
-(PIC) portal at `/` and an admin portal at `/admin`, gated by the account role
-returned from the backend on login.
+React + Vite + Tailwind, deployed on Netlify. Two portals in one app:
+
+- **User portal** (`/`) — fully public, no login. Anyone with the link can view,
+  add, and edit school legality records.
+- **Admin portal** (`/admin`) — requires an admin login. Adds a Legality Status
+  control on top of the same data, plus an aggregate dashboard.
 
 ## Folder structure
 

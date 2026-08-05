@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
 
 const navItems = [
   { to: '/', label: 'Homepage', end: true },
@@ -15,7 +14,6 @@ const navItems = [
 
 export default function UserLayout() {
   const [openDropdown, setOpenDropdown] = useState(false);
-  const { fullName, signOut } = useAuth();
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -25,12 +23,9 @@ export default function UserLayout() {
             <div className="w-8 h-8 rounded-lg bg-accent-500 flex items-center justify-center font-display font-bold">L</div>
             <span className="font-display font-semibold tracking-tight">Legality Sekolah Tengah</span>
           </div>
-          <div className="flex items-center gap-3 text-sm">
-            <span className="text-navy-300">{fullName || 'PIC'}</span>
-            <button onClick={signOut} className="text-navy-300 hover:text-white transition-colors">
-              Sign out
-            </button>
-          </div>
+          <NavLink to="/login" className="text-sm text-navy-300 hover:text-white transition-colors">
+            Admin login
+          </NavLink>
         </div>
         <nav className="max-w-6xl mx-auto px-6 flex gap-1 border-t border-navy-800 overflow-x-auto">
           {navItems.map((item) =>

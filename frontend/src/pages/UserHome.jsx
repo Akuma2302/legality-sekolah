@@ -1,15 +1,12 @@
-import { useAuth } from '../hooks/useAuth';
-
 export default function UserHome() {
-  const { fullName } = useAuth();
   return (
     <div>
       <h1 className="font-display text-2xl font-semibold text-navy-900">
-        Assalamualaikum{fullName ? `, ${fullName}` : ''}
+        Assalamualaikum
       </h1>
       <p className="text-slate-500 mt-2 max-w-xl">
-        This is your homepage. Use the tabs above to manage school legality records,
-        access the legality kit, program templates, and the organisation chart.
+        Welcome to the Legality Sekolah Tengah portal. Use the tabs above to manage school
+        legality records, access the legality kit, program templates, and the organisation chart.
       </p>
       <div className="grid grid-cols-3 gap-4 mt-8">
         <a href="/legality/sekolah" className="bg-white rounded-2xl border border-slate-200 p-5 hover:border-accent-400 hover:shadow-md transition-all">

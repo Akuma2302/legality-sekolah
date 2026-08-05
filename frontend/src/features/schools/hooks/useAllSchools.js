@@ -8,7 +8,7 @@ export function useAllSchools() {
 
   const reload = useCallback(() => {
     setLoading(true);
-    return api.getAllSchools().then(setSchools).finally(() => setLoading(false));
+    return api.getSchools().then(setSchools).finally(() => setLoading(false));
   }, []);
 
   useEffect(() => { reload(); }, [reload]);

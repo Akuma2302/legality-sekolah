@@ -1,10 +1,6 @@
 import { School } from '../models/school.model.js';
 
 export const schoolsRepository = {
-  async findByOwner(ownerId) {
-    return School.find({ owner_id: ownerId }).sort({ created_at: -1 });
-  },
-
   async findAll() {
     return School.find().sort({ created_at: -1 });
   },
@@ -17,8 +13,8 @@ export const schoolsRepository = {
     }
   },
 
-  async create({ school_name, pic_name, type, owner_id }) {
-    return School.create({ school_name, pic_name, type, owner_id });
+  async create({ school_name, pic_name, type }) {
+    return School.create({ school_name, pic_name, type });
   },
 
   async update(id, updates) {

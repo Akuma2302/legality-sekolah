@@ -30,15 +30,14 @@ export const api = {
   signin: (payload) => request('/api/auth/signin', { method: 'POST', body: JSON.stringify(payload) }),
   me: () => request('/api/auth/me'),
 
-  // Schools — user
-  getMySchools: () => request('/api/schools/mine'),
+  // Schools — public, no login required (except legality status below)
+  getSchools: () => request('/api/schools'),
   createSchool: (payload) => request('/api/schools', { method: 'POST', body: JSON.stringify(payload) }),
   getSchool: (id) => request(`/api/schools/${id}`),
   updateSchool: (id, payload) => request(`/api/schools/${id}`, { method: 'PUT', body: JSON.stringify(payload) }),
   deleteSchool: (id) => request(`/api/schools/${id}`, { method: 'DELETE' }),
 
-  // Schools — admin
-  getAllSchools: () => request('/api/schools'),
+  // Admin only — requires an admin login token
   updateLegalityStatus: (id, legality_status) =>
     request(`/api/schools/${id}/legality-status`, {
       method: 'PATCH',

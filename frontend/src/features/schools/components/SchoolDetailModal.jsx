@@ -35,7 +35,11 @@ export default function SchoolDetailModal({ school, onClose, onSaved }) {
     setSaving(true);
     setError('');
     try {
-      const updated = await api.updateSchool(school.id, form);
+      const { legality_status, ...editableFields } = form;
+      let updated = await api.updateSchool(school.id, editableFields);
+      if (isAdmin) {
+        updated = await api.updateLegalityStatus(school.id, legality_status);
+      }
       setSavedAt(updated.updated_at);
       onSaved?.(updated);
     } catch (err) {

@@ -5,15 +5,14 @@ import { asyncHandler } from '../utils/asyncHandler.js';
 
 const router = express.Router();
 
-// ---- USER: only their own schools (as PIC) ----
-router.get('/mine', requireAuth, asyncHandler(schoolsController.listMine));
-router.post('/', requireAuth, asyncHandler(schoolsController.create));
-router.get('/:id', requireAuth, asyncHandler(schoolsController.getById));
-router.put('/:id', requireAuth, asyncHandler(schoolsController.update));
-router.delete('/:id', requireAuth, asyncHandler(schoolsController.remove));
+// ---- PUBLIC — the user portal has no login, so anyone can browse/add/edit schools ----
+router.get('/', asyncHandler(schoolsController.list));
+router.post('/', asyncHandler(schoolsController.create));
+router.get('/:id', asyncHandler(schoolsController.getById));
+router.put('/:id', asyncHandler(schoolsController.update));
+router.delete('/:id', asyncHandler(schoolsController.remove));
 
-// ---- ADMIN: every school across all PICs ----
-router.get('/', requireAuth, requireAdmin, asyncHandler(schoolsController.listAll));
+// ---- ADMIN ONLY — requires login. The only thing gated behind admin auth. ----
 router.patch('/:id/legality-status', requireAuth, requireAdmin, asyncHandler(schoolsController.updateLegalityStatus));
 
 export default router;

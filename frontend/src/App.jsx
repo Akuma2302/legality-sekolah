@@ -20,15 +20,8 @@ export default function App() {
     <Routes>
       <Route path="/login" element={<Login />} />
 
-      {/* User portal */}
-      <Route
-        path="/"
-        element={
-          <ProtectedRoute requireRole="user">
-            <UserLayout />
-          </ProtectedRoute>
-        }
-      >
+      {/* User portal — public, no login required */}
+      <Route path="/" element={<UserLayout />}>
         <Route index element={<UserHome />} />
         <Route path="legality/sekolah" element={<UserLegalitySekolah />} />
         <Route path="legality/alumni" element={<UserLegalityAlumni />} />

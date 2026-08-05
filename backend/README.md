@@ -31,27 +31,42 @@ backend/
 ## Request flow
 
 ```
-Client → Routes → Middleware (auth) → Controller → Service → Repository → MongoDB
+Client → Routes → Middleware (auth, only on the one protected route) → Controller → Service → Repository → MongoDB
 ```
 
 - **Routes** map an HTTP verb + path to a controller function.
 - **Controllers** read `req`, call a service, write `res`. No business logic here.
-- **Services** hold the actual rules — e.g. "a PIC can only edit their own school",
-  "only admins can change legality status" — and call one or more repositories.
+- **Services** hold the actual rules — e.g. "the general school update route never
+  accepts legality_status" — and call one or more repositories.
 - **Repositories** are the only files that talk to MongoDB directly (via Mongoose models).
 - **Validators** check request payloads before a service acts on them.
 - **Models** are Mongoose schemas, plus shared constants (school types, states, legality statuses).
 
+## Access model
+
+- **Everything under `/api/schools`, `/api/teachers`, `/api/mom-notes` is public** —
+  no login required. This matches the frontend: the user portal has no accounts,
+  so anyone with the link can view, add, and edit school records. There's no
+  ownership concept anymore (no `owner_id` on schools) — it's one shared pool
+  of records.
+- **`PATCH /api/schools/:id/legality-status` is the one protected route** — it
+  requires an admin login (`requireAuth` + `requireAdmin`). This is the only
+  thing an admin account actually gates.
+- Admin accounts exist purely to log into the admin portal (dashboard + the
+  Legality Status control). They're created via `/api/auth/signup` and
+  promoted with the script below — see [Authentication](#authentication).
+
 ## Authentication
 
 There's no Supabase Auth (or any external provider) — this backend issues its
-own JWTs:
+own JWTs, used only for admin login:
 
 1. `POST /api/auth/signup` — hashes the password with bcrypt, creates a `User`
    document (`role: 'user'` by default), returns `{ token, user }`.
 2. `POST /api/auth/signin` — verifies the password, returns `{ token, user }`.
 3. The frontend stores the token and sends it as `Authorization: Bearer <token>`
-   on every request. `requireAuth` middleware verifies it and loads the user.
+   on every request. `requireAuth` middleware verifies it and loads the user —
+   but as noted above, almost nothing actually requires it.
 
 ### Making someone an admin
 

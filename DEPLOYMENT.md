@@ -65,15 +65,21 @@ Back in **Render → your backend service → Environment**, set `FRONTEND_URL` 
 
 ## 4. Creating your first admin user
 
-Sign-ups default to `role: 'user'`. To promote someone to admin:
+There's no signup flow for regular visitors — the user portal has no login at
+all. Admin accounts are the only accounts in the system, created directly by
+you:
 
-1. Have them sign up normally from the app's login page.
-2. From your machine (with the same `MONGODB_URI` in a local `.env`, or by running this against your Render shell):
+1. Go to your Netlify URL → click **Admin login** (top right of the user
+   portal) → **Don't have an account? Sign up** → create the account with the
+   email/password you want to use as admin.
+2. From your machine (with the same `MONGODB_URI` in a local `.env`, or by
+   running this against your Render shell):
    ```bash
    cd backend
    npm run create-admin -- their-email@example.com
    ```
-3. They'll see the admin portal (`/admin`) next time they sign in (or on their next page load if already signed in, since role is checked on each protected route).
+3. Sign in again (or refresh if already signed in) — they'll now land in the
+   admin portal (`/admin`).
 
 If you don't have Node set up locally, you can also open **Render → your backend service → Shell** and run the same command there, or connect to your Atlas cluster with MongoDB Compass and edit the `role` field on their document in the `users` collection directly.
 
@@ -81,10 +87,10 @@ If you don't have Node set up locally, you can also open **Render → your backe
 
 ## 5. Try it end to end
 
-1. Open your Netlify URL → Sign up as a normal user.
-2. Run `npm run create-admin -- <your-email>` if you want to test the admin portal too (use a second account for a normal PIC test).
-3. As a user: Legality → Sekolah → **+ Add school** → fill in School Name, PIC Name, Type → click into the card → fill in branch/state/contacts → add a teacher → add a MOM note → **Save**.
-4. As an admin: **Legality (Sekolah)** tab → you should see that school in the table → change its **Legality Status** dropdown.
+1. Open your Netlify URL — you should land straight on the homepage, no login prompt.
+2. Legality → Sekolah → **+ Add school** → fill in School Name, PIC Name, Type → click into the card → fill in branch/state/contacts → add a teacher → add a MOM note → **Save**. None of this requires an account.
+3. Click **Admin login** → sign up, then run `npm run create-admin -- <your-email>` (step 4 above), then sign in again.
+4. As an admin: **Legality (Sekolah)** tab → you should see the school you just added → click into it to see the full detail view, now with a **Legality Status** dropdown at the top → change it and **Save**.
 
 ---
 
@@ -110,7 +116,8 @@ For local MongoDB without Atlas, install MongoDB Community Server and use
 ---
 
 ## Notes & next steps
+- **The user portal has no access control at all.** Anyone with the link can view, add, and edit every school record — there's no per-visitor identity, so nothing stops one visitor from editing a school someone else added. That was the explicit goal ("accessible for anyone"), but it does mean this only makes sense for a trusted-audience internal tool (shared link, not indexed publicly) rather than something exposed to the open internet with sensitive data. If you later need "only the PIC who added a school can edit it," that requires bringing back some form of lightweight identity (e.g. a per-browser edit token, or optional accounts) — worth flagging if that becomes a concern.
 - Admin roles are assigned via the `create-admin` script for now — build an in-app "invite admin" flow later if you need self-service.
 - The four Legality Status options are: `Legal w/ BnW`, `Legal w/o BnW`, `Potentially Legal`, `Not Legal`. Adjust the enum in `backend/src/models/school.model.js` (and `frontend/src/utils/constants.js` to match) if that wording isn't right.
 - "Alumni" (both portals) and "Kit Legality" / "Template form" / "TDS chart" (user portal) are Coming Soon placeholders — build these out once you have the specs.
-- JWTs are valid for 7 days (see `backend/src/utils/jwt.js`) and stored in the browser's `localStorage`. There's no refresh-token flow yet — users just sign in again after expiry.
+- JWTs are valid for 7 days (see `backend/src/utils/jwt.js`) and stored in the browser's `localStorage`. There's no refresh-token flow yet — admins just sign in again after expiry.

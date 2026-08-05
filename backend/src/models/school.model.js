@@ -11,7 +11,7 @@ export const STATES = [
 ];
 export const LEGALITY_STATUSES = ['Legal w/ BnW', 'Legal w/o BnW', 'Potentially Legal', 'Not Legal'];
 
-/** Fields a PIC (regular user) is allowed to edit on their own school record. */
+/** Fields anyone can edit through the public user portal (everything except legality_status). */
 export const EDITABLE_SCHOOL_FIELDS = [
   'school_name', 'pic_name', 'type', 'branch', 'state',
   'email', 'contact_number', 'website', 'tiktok', 'instagram', 'note',
@@ -19,8 +19,6 @@ export const EDITABLE_SCHOOL_FIELDS = [
 
 const schoolSchema = new Schema(
   {
-    owner_id: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-
     // Step 1 (Add School)
     school_name: { type: String, required: true, trim: true },
     pic_name: { type: String, required: true, trim: true },
@@ -36,13 +34,11 @@ const schoolSchema = new Schema(
     instagram: { type: String, default: '' },
     note: { type: String, default: '' }, // "for PIC reference"
 
-    // Admin-only field
+    // Admin-only field — can only be changed via the protected PATCH /:id/legality-status route
     legality_status: { type: String, enum: LEGALITY_STATUSES, default: 'Not Legal' },
   },
   { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } }
 );
-
-schoolSchema.index({ owner_id: 1 });
 
 toCleanJSON(schoolSchema);
 

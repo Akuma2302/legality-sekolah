@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { useMySchools } from '../features/schools/hooks/useMySchools';
+import { useSchools } from '../features/schools/hooks/useSchools';
 import SchoolCard from '../features/schools/components/SchoolCard';
 import AddSchoolModal from '../features/schools/components/AddSchoolModal';
 import SchoolDetailModal from '../features/schools/components/SchoolDetailModal';
 
 export default function UserLegalitySekolah() {
-  const { schools, loading, addSchool, updateSchool } = useMySchools();
+  const { schools, loading, addSchool, updateSchool } = useSchools();
   const [showAdd, setShowAdd] = useState(false);
   const [selected, setSelected] = useState(null);
 
@@ -19,7 +19,7 @@ export default function UserLegalitySekolah() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="font-display text-2xl font-semibold text-navy-900">Legality — Sekolah</h1>
-          <p className="text-slate-500 mt-1 text-sm">Add and manage the schools under your care.</p>
+          <p className="text-slate-500 mt-1 text-sm">Add and manage school legality records.</p>
         </div>
       </div>
 
