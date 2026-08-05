@@ -1,35 +1,25 @@
 import { useState } from 'react';
-import { supabase } from '../services/supabaseClient';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 
 export default function Login() {
   const [mode, setMode] = useState('signin'); // 'signin' | 'signup'
   const [form, setForm] = useState({ email: '', password: '', fullName: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
+  const { signIn, signUp } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    setMessage('');
     setLoading(true);
     try {
-      if (mode === 'signin') {
-        const { error } = await supabase.auth.signInWithPassword({
-          email: form.email,
-          password: form.password,
-        });
-        if (error) throw error;
-      } else {
-        const { error } = await supabase.auth.signUp({
-          email: form.email,
-          password: form.password,
-          options: { data: { full_name: form.fullName } },
-        });
-        if (error) throw error;
-        setMessage('Account created. Check your email to confirm, then sign in.');
-        setMode('signin');
-      }
+      const user =
+        mode === 'signin'
+          ? await signIn(form.email, form.password)
+          : await signUp(form.email, form.password, form.fullName);
+      navigate(user.role === 'admin' ? '/admin' : '/', { replace: true });
     } catch (err) {
       setError(err.message);
     } finally {
@@ -77,7 +67,6 @@ export default function Login() {
           />
 
           {error && <p className="text-sm text-red-600">{error}</p>}
-          {message && <p className="text-sm text-emerald-600">{message}</p>}
 
           <button
             type="submit"
@@ -89,15 +78,16 @@ export default function Login() {
         </form>
 
         <button
-          onClick={() => { setMode(mode === 'signin' ? 'signup' : 'signin'); setError(''); setMessage(''); }}
+          onClick={() => { setMode(mode === 'signin' ? 'signup' : 'signin'); setError(''); }}
           className="w-full text-center text-sm text-accent-500 hover:text-accent-400 mt-4"
         >
           {mode === 'signin' ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
         </button>
 
         <p className="text-xs text-slate-400 mt-6 text-center">
-          Admin access is granted separately — ask your system owner to set your role
-          to "admin" in Supabase after signing up.
+          Admin access is granted separately — ask your system owner to run
+          <code className="mx-1 bg-slate-100 px-1 rounded">npm run create-admin</code>
+          for your account after signing up.
         </p>
       </div>
     </div>

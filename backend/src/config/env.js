@@ -4,7 +4,7 @@ dotenv.config();
 
 export const env = {
   port: process.env.PORT || 4000,
-  supabaseUrl: process.env.SUPABASE_URL,
-  supabaseServiceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
+  mongodbUri: process.env.MONGODB_URI,
+  jwtSecret: process.env.JWT_SECRET,
   frontendUrl: process.env.FRONTEND_URL || '*',
 };

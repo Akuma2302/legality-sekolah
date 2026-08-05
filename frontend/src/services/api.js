@@ -1,10 +1,9 @@
-import { supabase } from './supabaseClient';
+import { authToken } from './authToken';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 
-async function authHeaders() {
-  const { data } = await supabase.auth.getSession();
-  const token = data?.session?.access_token;
+function authHeaders() {
+  const token = authToken.get();
   return {
     'Content-Type': 'application/json',
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -12,10 +11,9 @@ async function authHeaders() {
 }
 
 async function request(path, options = {}) {
-  const headers = await authHeaders();
   const res = await fetch(`${API_URL}${path}`, {
     ...options,
-    headers: { ...headers, ...(options.headers || {}) },
+    headers: { ...authHeaders(), ...(options.headers || {}) },
   });
 
   if (!res.ok) {
@@ -27,6 +25,11 @@ async function request(path, options = {}) {
 }
 
 export const api = {
+  // Auth
+  signup: (payload) => request('/api/auth/signup', { method: 'POST', body: JSON.stringify(payload) }),
+  signin: (payload) => request('/api/auth/signin', { method: 'POST', body: JSON.stringify(payload) }),
+  me: () => request('/api/auth/me'),
+
   // Schools — user
   getMySchools: () => request('/api/schools/mine'),
   createSchool: (payload) => request('/api/schools', { method: 'POST', body: JSON.stringify(payload) }),

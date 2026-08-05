@@ -1,7 +1,8 @@
 # Legality Sekolah Tengah — Frontend
 
 React + Vite + Tailwind, deployed on Netlify. Two portals in one app: a user
-(PIC) portal at `/` and an admin portal at `/admin`, gated by Supabase auth role.
+(PIC) portal at `/` and an admin portal at `/admin`, gated by the account role
+returned from the backend on login.
 
 ## Folder structure
 
@@ -20,7 +21,7 @@ frontend/
 │   ├── hooks/                # Cross-cutting custom hooks (useAuth)
 │   ├── context/                # React context providers (AuthContext)
 │   ├── redux/                   # Reserved for global state if the app outgrows Context — unused for now
-│   ├── services/                 # API calls and external services (backend API client, Supabase client)
+│   ├── services/                 # API calls to the backend (api.js) and JWT storage (authToken.js)
 │   ├── utils/                     # Helper functions and shared constants
 │   ├── App.jsx
 │   ├── index.css
@@ -48,7 +49,7 @@ independent domains with their own hooks.
 ## Local development
 
 ```bash
-cp .env.example .env   # fill in your Supabase + API values
+cp .env.example .env   # fill in your backend API URL
 npm install
 npm run dev              # http://localhost:5173
 ```

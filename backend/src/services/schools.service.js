@@ -7,7 +7,7 @@ import { validateCreateSchool, validateLegalityStatus } from '../validators/scho
 export async function assertSchoolAccess(schoolId, user) {
   const school = await schoolsRepository.findById(schoolId);
   if (!school) throw new ApiError(404, 'School not found');
-  if (user.role !== 'admin' && school.owner_id !== user.id) {
+  if (user.role !== 'admin' && school.owner_id.toString() !== user.id) {
     throw new ApiError(403, 'Not your school');
   }
   return school;

@@ -19,7 +19,7 @@ export const schoolsController = {
   },
 
   update: async (req, res) => {
-    // Includes updated_at, refreshed automatically on save (see supabase/schema.sql trigger)
+    // Includes updated_at, refreshed automatically on save (Mongoose timestamps option)
     res.json(await schoolsService.update(req.user, req.params.id, req.body));
   },
 

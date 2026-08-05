@@ -1,34 +1,23 @@
-import { supabase } from '../config/supabase.js';
+import { Teacher } from '../models/teacher.model.js';
 
 export const teachersRepository = {
   async findBySchool(schoolId) {
-    const { data, error } = await supabase
-      .from('teachers')
-      .select('*')
-      .eq('school_id', schoolId)
-      .order('created_at', { ascending: false });
-    if (error) throw error;
-    return data;
+    return Teacher.find({ school_id: schoolId }).sort({ created_at: -1 });
   },
 
   async findById(id) {
-    const { data, error } = await supabase.from('teachers').select('*').eq('id', id).single();
-    if (error) return null;
-    return data;
+    try {
+      return await Teacher.findById(id);
+    } catch {
+      return null; // invalid ObjectId format
+    }
   },
 
   async create(schoolId, { name, position, subject, phone, state }) {
-    const { data, error } = await supabase
-      .from('teachers')
-      .insert({ school_id: schoolId, name, position, subject, phone, state })
-      .select()
-      .single();
-    if (error) throw error;
-    return data;
+    return Teacher.create({ school_id: schoolId, name, position, subject, phone, state });
   },
 
   async remove(id) {
-    const { error } = await supabase.from('teachers').delete().eq('id', id);
-    if (error) throw error;
+    await Teacher.findByIdAndDelete(id);
   },
 };

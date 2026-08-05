@@ -2,7 +2,7 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
 export default function ProtectedRoute({ children, requireRole }) {
-  const { loading, session, role } = useAuth();
+  const { loading, isAuthenticated, role } = useAuth();
 
   if (loading) {
     return (
@@ -12,7 +12,7 @@ export default function ProtectedRoute({ children, requireRole }) {
     );
   }
 
-  if (!session) return <Navigate to="/login" replace />;
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
 
   if (requireRole && role !== requireRole) {
     // Signed in but wrong role — send them to their own portal

@@ -1,40 +1,54 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { supabase } from '../services/supabaseClient';
+import { api } from '../services/api';
+import { authToken } from '../services/authToken';
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [session, setSession] = useState(undefined); // undefined = loading
-  const [profile, setProfile] = useState(null);
+  const [user, setUser] = useState(undefined); // undefined = still checking for a stored token
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => setSession(data.session));
-
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, s) => {
-      setSession(s);
-    });
-    return () => listener.subscription.unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    if (!session?.user) {
-      setProfile(null);
+    const token = authToken.get();
+    if (!token) {
+      setUser(null);
       return;
     }
-    supabase
-      .from('profiles')
-      .select('role, full_name')
-      .eq('id', session.user.id)
-      .single()
-      .then(({ data }) => setProfile(data));
-  }, [session]);
+    api.me()
+      .then(setUser)
+      .catch(() => {
+        authToken.clear();
+        setUser(null);
+      });
+  }, []);
+
+  const signIn = async (email, password) => {
+    const { token, user: signedInUser } = await api.signin({ email, password });
+    authToken.set(token);
+    setUser(signedInUser);
+    return signedInUser;
+  };
+
+  const signUp = async (email, password, full_name) => {
+    const { token, user: newUser } = await api.signup({ email, password, full_name });
+    authToken.set(token);
+    setUser(newUser);
+    return newUser;
+  };
+
+  const signOut = () => {
+    authToken.clear();
+    setUser(null);
+  };
 
   const value = {
-    session,
-    loading: session === undefined,
-    role: profile?.role,
-    fullName: profile?.full_name,
-    signOut: () => supabase.auth.signOut(),
+    user,
+    loading: user === undefined,
+    isAuthenticated: !!user,
+    role: user?.role,
+    fullName: user?.full_name,
+    signIn,
+    signUp,
+    signOut,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
