@@ -13,11 +13,16 @@ export function useAllSchools() {
 
   useEffect(() => { reload(); }, [reload]);
 
+  /** Replaces one school in local state — used after any save (status dropdown or full detail modal). */
+  const applyUpdate = (updated) => {
+    setSchools((prev) => prev.map((s) => (s.id === updated.id ? updated : s)));
+  };
+
   const updateLegalityStatus = async (schoolId, status) => {
     const updated = await api.updateLegalityStatus(schoolId, status);
-    setSchools((prev) => prev.map((s) => (s.id === updated.id ? updated : s)));
+    applyUpdate(updated);
     return updated;
   };
 
-  return { schools, loading, updateLegalityStatus, reload };
+  return { schools, loading, updateLegalityStatus, applyUpdate, reload };
 }

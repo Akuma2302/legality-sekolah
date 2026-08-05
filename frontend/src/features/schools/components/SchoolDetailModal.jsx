@@ -3,10 +3,14 @@ import Modal from '../../../components/Modal';
 import TeacherCRM from '../../teachers/components/TeacherCRM';
 import MomNoteSection from '../../mom-notes/components/MomNoteSection';
 import { api } from '../../../services/api';
-import { SCHOOL_TYPES, BRANCHES, STATES } from '../../../utils/constants';
+import { useAuth } from '../../../hooks/useAuth';
+import { SCHOOL_TYPES, BRANCHES, STATES, LEGALITY_STATUSES, LEGALITY_STATUS_STYLES } from '../../../utils/constants';
 import { formatTimestamp } from '../../../utils/formatDate';
 
 export default function SchoolDetailModal({ school, onClose, onSaved }) {
+  const { role } = useAuth();
+  const isAdmin = role === 'admin';
+
   const [form, setForm] = useState({
     school_name: school.school_name || '',
     pic_name: school.pic_name || '',
@@ -19,6 +23,7 @@ export default function SchoolDetailModal({ school, onClose, onSaved }) {
     tiktok: school.tiktok || '',
     instagram: school.instagram || '',
     note: school.note || '',
+    legality_status: school.legality_status || LEGALITY_STATUSES[LEGALITY_STATUSES.length - 1],
   });
   const [saving, setSaving] = useState(false);
   const [savedAt, setSavedAt] = useState(school.updated_at);
@@ -43,6 +48,18 @@ export default function SchoolDetailModal({ school, onClose, onSaved }) {
   return (
     <Modal title={school.school_name} onClose={onClose} wide>
       <div className="space-y-6">
+        {isAdmin && (
+          <Field label="Legality Status" hint="Only admins can see and change this.">
+            <select
+              className={`input font-medium ${LEGALITY_STATUS_STYLES[form.legality_status] || ''}`}
+              value={form.legality_status}
+              onChange={(e) => field('legality_status', e.target.value)}
+            >
+              {LEGALITY_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+            </select>
+          </Field>
+        )}
+
         <div className="grid grid-cols-2 gap-4">
           <Field label="School Name">
             <input className="input" value={form.school_name} onChange={(e) => field('school_name', e.target.value)} />
