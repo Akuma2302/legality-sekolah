@@ -3,7 +3,7 @@ import Modal from '../../../components/Modal';
 import TeacherCRM from '../../teachers/components/TeacherCRM';
 import MomNoteSection from '../../mom-notes/components/MomNoteSection';
 import { api } from '../../../services/api';
-import { SCHOOL_TYPES, BRANCHES, STATES, ALUMNI_STATUSES } from '../../../utils/constants';
+import { SCHOOL_TYPES, BRANCHES, STATES, ALUMNI_STATUSES, SCHOOL_TYPE_OPTIONS } from '../../../utils/constants';
 import { formatTimestamp } from '../../../utils/formatDate';
 
 export default function AlumniDetailModal({ alumnus, onClose, onSaved }) {
@@ -11,6 +11,7 @@ export default function AlumniDetailModal({ alumnus, onClose, onSaved }) {
     school_name: alumnus.school_name || '',
     pic_name: alumnus.pic_name || '',
     type: alumnus.type || SCHOOL_TYPES[0],
+    school_type: alumnus.school_type || '',
     branch: alumnus.branch || '',
     state: alumnus.state || '',
     status: alumnus.status || '',
@@ -19,6 +20,7 @@ export default function AlumniDetailModal({ alumnus, onClose, onSaved }) {
     website: alumnus.website || '',
     tiktok: alumnus.tiktok || '',
     instagram: alumnus.instagram || '',
+    program_propose: alumnus.program_propose || '',
     note: alumnus.note || '',
   });
   const [saving, setSaving] = useState(false);
@@ -63,6 +65,12 @@ export default function AlumniDetailModal({ alumnus, onClose, onSaved }) {
               {SCHOOL_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
             </select>
           </Field>
+          <Field label="School Type">
+            <select className="input" value={form.school_type} onChange={(e) => field('school_type', e.target.value)}>
+              <option value="">Select school type</option>
+              {SCHOOL_TYPE_OPTIONS.map((t) => <option key={t} value={t}>{t}</option>)}
+            </select>
+          </Field>
           <Field label="Branch">
             <select className="input" value={form.branch} onChange={(e) => field('branch', e.target.value)}>
               <option value="">Select branch</option>
@@ -91,6 +99,14 @@ export default function AlumniDetailModal({ alumnus, onClose, onSaved }) {
             <input className="input" value={form.instagram} onChange={(e) => field('instagram', e.target.value)} />
           </Field>
         </div>
+
+        <Field label="Program Propose" hint="Describe the program details being proposed.">
+          <textarea
+            className="input min-h-[70px]"
+            value={form.program_propose}
+            onChange={(e) => field('program_propose', e.target.value)}
+          />
+        </Field>
 
         <Field label="Note (for PIC reference)" hint="A short internal note only visible to your team.">
           <textarea

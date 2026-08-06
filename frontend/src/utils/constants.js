@@ -23,3 +23,5 @@ export const ALUMNI_STATUSES = [
   'Done talk preparation',
   'Done creating program report',
 ];
+
+export const SCHOOL_TYPE_OPTIONS = ['Harian', 'Asrama', 'Harian & Asrama'];

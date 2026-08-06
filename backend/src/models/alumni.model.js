@@ -15,10 +15,12 @@ export const ALUMNI_STATUSES = [
   'Done creating program report',
 ];
 
+export const SCHOOL_TYPE_OPTIONS = ['Harian', 'Asrama', 'Harian & Asrama'];
+
 /** Fields anyone can edit through the public user portal. */
 export const EDITABLE_ALUMNI_FIELDS = [
-  'school_name', 'pic_name', 'type', 'branch', 'state', 'status',
-  'email', 'contact_number', 'website', 'tiktok', 'instagram', 'note',
+  'school_name', 'pic_name', 'type', 'school_type', 'branch', 'state', 'status',
+  'email', 'contact_number', 'website', 'tiktok', 'instagram', 'program_propose', 'note',
 ];
 
 const alumniSchema = new Schema(
@@ -29,6 +31,7 @@ const alumniSchema = new Schema(
     type: { type: String, enum: SCHOOL_TYPES, required: true },
 
     // Step 2 (Detail view, editable)
+    school_type: { type: String, enum: [...SCHOOL_TYPE_OPTIONS, ''], default: '' },
     branch: { type: String, enum: [...BRANCHES, ''], default: '' },
     state: { type: String, enum: [...STATES, ''], default: '' },
     status: { type: String, enum: [...ALUMNI_STATUSES, ''], default: '' },
@@ -37,6 +40,7 @@ const alumniSchema = new Schema(
     website: { type: String, default: '' },
     tiktok: { type: String, default: '' },
     instagram: { type: String, default: '' },
+    program_propose: { type: String, default: '' },
     note: { type: String, default: '' }, // "for PIC reference"
   },
   { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } }

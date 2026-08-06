@@ -1,0 +1,1 @@
+for the add detail in AlumniDetailModal.jsx file, add on also form with name "School Type". make it drop with option "Harian", "Asrama" and "Harian & Asrama". add other form above the note with name "Program Propose", make it text field for they to insert the detail the program they want to propose
