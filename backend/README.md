@@ -14,7 +14,7 @@ backend/
 │   ├── routes/         # Define API endpoints, wire up middleware
 │   ├── services/       # Business logic (authorization, validation orchestration)
 │   ├── middlewares/    # Auth guard, centralized error handler
-│   ├── models/         # Mongoose schemas (User, School, Teacher, MomNote) + shared enums
+│   ├── models/         # Mongoose schemas (User, School, Alumni, Teacher, MomNote) + shared enums
 │   ├── repositories/   # Raw MongoDB data access via Mongoose, nothing else
 │   ├── utils/          # asyncHandler, ApiError, JWT sign/verify
 │   ├── validators/     # Request payload validation
@@ -44,15 +44,36 @@ Client → Routes → Middleware (auth, only on the one protected route) → Con
 
 ## Access model
 
-- **Everything under `/api/schools`, `/api/teachers`, `/api/mom-notes` is public** —
-  no login required. This matches the frontend: the user portal has no accounts,
-  so anyone with the link can view, add, and edit school records. There's no
-  ownership concept (no `owner_id` on schools) — it's one shared pool of records.
+- **Everything under `/api/schools`, `/api/alumni`, `/api/teachers`, `/api/mom-notes`
+  is public** — no login required. This matches the frontend: the user portal
+  has no accounts, so anyone with the link can view, add, and edit records.
+  There's no ownership concept — it's one shared pool of records.
 - **`PATCH /api/schools/:id/legality-status` is the one protected route** — it
   requires an admin login (`requireAuth` + `requireAdmin`). This is the only
-  thing an admin account actually gates.
+  thing an admin account actually gates. Alumni entries have no equivalent
+  admin-only field.
 - There's exactly one kind of account in this system: admin. There's no public
   signup — accounts are only ever created with the seed script below.
+
+## Schools vs. Alumni
+
+Both are "add an entry → view/edit its details → attach teachers and MOM
+notes → Save" workflows with the same shape (`school_name`, `pic_name`,
+`type`, `branch`, `state`, contact fields, `note`). They're separate Mongoose
+models/collections (`School`, `Alumni`) with separate routes
+(`/api/schools`, `/api/alumni`) because their status field differs — schools
+have an admin-only `legality_status`, alumni entries have a public `status`
+tracking outreach progress (`Done messaging teacher` → ... → `Done creating
+program report`, see `ALUMNI_STATUSES` in `models/alumni.model.js`).
+
+Their **teachers and MOM notes are shared**, not duplicated, though. Rather
+than a second `Teacher`/`MomNote` collection for alumni, those two models use
+a polymorphic reference — `parent_type` (`'School'` or `'Alumni'`) plus
+`parent_id` — so `POST /api/teachers/school/:id` and
+`POST /api/teachers/alumni/:id` write to the same `teachers` collection,
+just scoped by parent. `resolveParentType()` in `utils/parentResolver.js` is
+where that "school" ↔ `School` model, "alumni" ↔ `Alumni` model mapping
+happens.
 
 ## Authentication
 

@@ -4,8 +4,8 @@ import { STATES } from '../../../utils/constants';
 
 const emptyForm = { name: '', position: '', subject: '', phone: '', state: STATES[0] };
 
-export default function TeacherCRM({ schoolId }) {
-  const { teachers, loading, addTeacher, removeTeacher } = useTeachers(schoolId);
+export default function TeacherCRM({ parentType, parentId }) {
+  const { teachers, loading, addTeacher, removeTeacher } = useTeachers(parentType, parentId);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);

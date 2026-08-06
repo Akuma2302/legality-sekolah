@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { useMomNotes } from '../hooks/useMomNotes';
 import { formatTimestamp } from '../../../utils/formatDate';
 
-export default function MomNoteSection({ schoolId }) {
-  const { notes, loading, addNote } = useMomNotes(schoolId);
+export default function MomNoteSection({ parentType, parentId }) {
+  const { notes, loading, addNote } = useMomNotes(parentType, parentId);
   const [showForm, setShowForm] = useState(false);
   const [text, setText] = useState('');
   const [saving, setSaving] = useState(false);

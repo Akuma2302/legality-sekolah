@@ -1,8 +1,8 @@
 import { Teacher } from '../models/teacher.model.js';
 
 export const teachersRepository = {
-  async findBySchool(schoolId) {
-    return Teacher.find({ school_id: schoolId }).sort({ created_at: -1 });
+  async findByParent(parentType, parentId) {
+    return Teacher.find({ parent_type: parentType, parent_id: parentId }).sort({ created_at: -1 });
   },
 
   async findById(id) {
@@ -13,8 +13,8 @@ export const teachersRepository = {
     }
   },
 
-  async create(schoolId, { name, position, subject, phone, state }) {
-    return Teacher.create({ school_id: schoolId, name, position, subject, phone, state });
+  async create(parentType, parentId, { name, position, subject, phone, state }) {
+    return Teacher.create({ parent_type: parentType, parent_id: parentId, name, position, subject, phone, state });
   },
 
   async remove(id) {

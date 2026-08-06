@@ -4,8 +4,8 @@ import { asyncHandler } from '../utils/asyncHandler.js';
 
 const router = express.Router();
 
-router.get('/school/:schoolId', asyncHandler(teachersController.list));
-router.post('/school/:schoolId', asyncHandler(teachersController.add));
+router.get('/:parentType/:parentId', asyncHandler(teachersController.list));
+router.post('/:parentType/:parentId', asyncHandler(teachersController.add));
 router.delete('/:id', asyncHandler(teachersController.remove));
 
 export default router;

@@ -1,16 +1,16 @@
 import { momNotesRepository } from '../repositories/momNotes.repository.js';
-import { assertSchoolExists } from './schools.service.js';
+import { assertParentExists } from '../utils/parentResolver.js';
 import { validateAddMomNote } from '../validators/momNotes.validator.js';
 
 export const momNotesService = {
-  async list(schoolId) {
-    await assertSchoolExists(schoolId);
-    return momNotesRepository.findBySchool(schoolId);
+  async list(parentType, parentId) {
+    const { refName } = await assertParentExists(parentType, parentId);
+    return momNotesRepository.findByParent(refName, parentId);
   },
 
-  async add(schoolId, payload) {
-    await assertSchoolExists(schoolId);
+  async add(parentType, parentId, payload) {
+    const { refName } = await assertParentExists(parentType, parentId);
     validateAddMomNote(payload);
-    return momNotesRepository.create(schoolId, payload.content);
+    return momNotesRepository.create(refName, parentId, payload.content);
   },
 };

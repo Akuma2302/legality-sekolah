@@ -100,8 +100,9 @@ than a plain password (see the note on this further down if you go that route).
 
 1. Open your Netlify URL — you should land straight on the homepage, no login prompt.
 2. Legality → Sekolah → **+ Add school** → fill in School Name, PIC Name, Type → click into the card → fill in branch/state/contacts → add a teacher → add a MOM note → **Save**. None of this requires an account.
-3. Click **Admin login** → sign in with `adminlegality` / `leg@lity!admin` (or whatever you seeded in step 4 above).
-4. As an admin: **Legality (Sekolah)** tab → you should see the school you just added → click into it to see the full detail view, now with a **Legality Status** dropdown at the top → change it and **Save**.
+3. Legality → Alumni → same workflow, but the detail view has a **Status** dropdown (outreach progress) instead of a legality field — also no account needed.
+4. Click **Admin login** → sign in with `adminlegality` / `leg@lity!admin` (or whatever you seeded in step 4 above).
+5. As an admin: **Legality (Sekolah)** tab → you should see the school you just added → click into it to see the full detail view, now with a **Legality Status** dropdown at the top → change it and **Save**.
 
 ---
 
@@ -132,5 +133,6 @@ For local MongoDB without Atlas, install MongoDB Community Server and use
 - **Change the default admin password before going live.** `adminlegality` / `leg@lity!admin` is a known, documented credential — anyone with this codebase knows it. Run `npm run seed-admin -- yourUsername yourStrongerPassword` once you're ready for real use, and it'll replace the default account.
 - There's no self-service admin creation by design — the seed script is the only way in. If you need a second admin, just run `npm run seed-admin -- secondUsername theirPassword` again with different credentials.
 - The four Legality Status options are: `Legal w/ BnW`, `Legal w/o BnW`, `Potentially Legal`, `Not Legal`. Adjust the enum in `backend/src/models/school.model.js` (and `frontend/src/utils/constants.js` to match) if that wording isn't right.
-- "Alumni" (both portals) and "Kit Legality" / "Template form" / "TDS chart" (user portal) are Coming Soon placeholders — build these out once you have the specs.
+- The five Alumni Status options are: `Done messaging teacher`, `Done proposing talk`, `Done getting talk date`, `Done talk preparation`, `Done creating program report`. Adjust the enum in `backend/src/models/alumni.model.js` (and `frontend/src/utils/constants.js`) if that wording isn't right.
+- The **user portal's** "Alumni" tab is now fully built (same workflow as Sekolah). What's still a Coming Soon placeholder: the **admin portal's** Alumni sub-tab (under Legality (Sekolah) → Sekolah/Alumni toggle — that one still just shows "Coming Soon" since alumni entries have no admin-only field to manage yet), plus "Kit Legality" / "Template form" / "TDS chart" on the user portal.
 - JWTs are valid for 7 days (see `backend/src/utils/jwt.js`) and stored in the browser's `localStorage`. There's no refresh-token flow yet — admins just sign in again after expiry.

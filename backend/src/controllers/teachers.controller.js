@@ -2,11 +2,11 @@ import { teachersService } from '../services/teachers.service.js';
 
 export const teachersController = {
   list: async (req, res) => {
-    res.json(await teachersService.list(req.params.schoolId));
+    res.json(await teachersService.list(req.params.parentType, req.params.parentId));
   },
 
   add: async (req, res) => {
-    const teacher = await teachersService.add(req.params.schoolId, req.body);
+    const teacher = await teachersService.add(req.params.parentType, req.params.parentId, req.body);
     res.status(201).json(teacher);
   },
 

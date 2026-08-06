@@ -1,0 +1,25 @@
+for tab Legality (Alumni)
+> below left have button with symbol "+" for add school
+Info need to be added:
+- School Name
+- PIC Name
+- Type (Dropdown, A,B,C, New)
+Then it will appear in container, only show the School Name and PIC Name, the  the PIC Name will be the header below it the School Name, , same for all added school
+so when they click the school container, it will appear all the info (can edited) and have other thing they need to edit. need to insert
+- Branch Dropdown(Central,North, East Coast,Borneo)
+- State  Dropdown(Johor, Kedah, Kelantan, Melaka, Negeri Sembilan, Pahang, Perak, Perlis, Penang, Sabah, Sarawak, Selangor, and Terengganu)
+- Status (Done messaging teacher, done proposing talk, done getting talk date, done talk preparation, done creating program report)
+- School Email
+- School Contact Number
+- School Website
+- School Tiktok
+- School Instagram
+- Small note ("for PIC reference", make small description below this section)
+below all the detail have button "Teacher CRM". when user click it, it will appear list of teacher and have button "Add Teacher". 
+Add Teacher, they need to key in:
+- Teacher Name
+- Position
+- Subjek Teach
+- Fon Number
+- State
+below it info have button "Add MOM" to write something (long text). So PIC need to write every detail in the detail then click the Button "Save" to save. So it will save in the database and include the timestamp (Day,Date,Time).

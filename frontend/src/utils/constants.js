@@ -15,3 +15,11 @@ export const LEGALITY_STATUS_STYLES = {
 };
 
 export const LEGALITY_STATUSES = Object.keys(LEGALITY_STATUS_STYLES);
+
+export const ALUMNI_STATUSES = [
+  'Done messaging teacher',
+  'Done proposing talk',
+  'Done getting talk date',
+  'Done talk preparation',
+  'Done creating program report',
+];

@@ -2,12 +2,11 @@ import { momNotesService } from '../services/momNotes.service.js';
 
 export const momNotesController = {
   list: async (req, res) => {
-    res.json(await momNotesService.list(req.params.schoolId));
+    res.json(await momNotesService.list(req.params.parentType, req.params.parentId));
   },
 
   add: async (req, res) => {
-    // Response includes created_at timestamp
-    const note = await momNotesService.add(req.params.schoolId, req.body);
+    const note = await momNotesService.add(req.params.parentType, req.params.parentId, req.body);
     res.status(201).json(note);
   },
 };

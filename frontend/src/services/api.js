@@ -43,14 +43,21 @@ export const api = {
       body: JSON.stringify({ legality_status }),
     }),
 
-  // Teachers
-  getTeachers: (schoolId) => request(`/api/teachers/school/${schoolId}`),
-  addTeacher: (schoolId, payload) =>
-    request(`/api/teachers/school/${schoolId}`, { method: 'POST', body: JSON.stringify(payload) }),
+  // Alumni — public, same shape as schools but no admin-only field
+  getAlumni: () => request('/api/alumni'),
+  createAlumnus: (payload) => request('/api/alumni', { method: 'POST', body: JSON.stringify(payload) }),
+  getAlumnus: (id) => request(`/api/alumni/${id}`),
+  updateAlumnus: (id, payload) => request(`/api/alumni/${id}`, { method: 'PUT', body: JSON.stringify(payload) }),
+  deleteAlumnus: (id) => request(`/api/alumni/${id}`, { method: 'DELETE' }),
+
+  // Teachers — shared by both schools and alumni entries; parentType is 'school' | 'alumni'
+  getTeachers: (parentType, parentId) => request(`/api/teachers/${parentType}/${parentId}`),
+  addTeacher: (parentType, parentId, payload) =>
+    request(`/api/teachers/${parentType}/${parentId}`, { method: 'POST', body: JSON.stringify(payload) }),
   deleteTeacher: (id) => request(`/api/teachers/${id}`, { method: 'DELETE' }),
 
-  // MOM notes
-  getMomNotes: (schoolId) => request(`/api/mom-notes/school/${schoolId}`),
-  addMomNote: (schoolId, content) =>
-    request(`/api/mom-notes/school/${schoolId}`, { method: 'POST', body: JSON.stringify({ content }) }),
+  // MOM notes — shared by both schools and alumni entries
+  getMomNotes: (parentType, parentId) => request(`/api/mom-notes/${parentType}/${parentId}`),
+  addMomNote: (parentType, parentId, content) =>
+    request(`/api/mom-notes/${parentType}/${parentId}`, { method: 'POST', body: JSON.stringify({ content }) }),
 };

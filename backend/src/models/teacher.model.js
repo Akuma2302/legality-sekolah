@@ -7,9 +7,14 @@ const { Schema } = mongoose;
 // Teachers reuse the same Malaysian state list as schools.
 export { STATES };
 
+export const PARENT_TYPES = ['School', 'Alumni'];
+
 const teacherSchema = new Schema(
   {
-    school_id: { type: Schema.Types.ObjectId, ref: 'School', required: true },
+    // Polymorphic reference — a teacher belongs to either a School or an Alumni entry.
+    parent_type: { type: String, enum: PARENT_TYPES, required: true },
+    parent_id: { type: Schema.Types.ObjectId, required: true, refPath: 'parent_type' },
+
     name: { type: String, required: true, trim: true },
     position: { type: String, default: '' },
     subject: { type: String, default: '' },
@@ -19,7 +24,7 @@ const teacherSchema = new Schema(
   { timestamps: { createdAt: 'created_at', updatedAt: false } }
 );
 
-teacherSchema.index({ school_id: 1 });
+teacherSchema.index({ parent_type: 1, parent_id: 1 });
 
 toCleanJSON(teacherSchema);
 

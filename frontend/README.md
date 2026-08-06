@@ -19,6 +19,7 @@ frontend/
 │   ├── pages/              # Route-level components (one per URL)
 │   ├── features/            # Feature-based modules — each owns its components + hooks
 │   │   ├── schools/
+│   │   ├── alumni/
 │   │   ├── teachers/
 │   │   └── mom-notes/
 │   ├── hooks/                # Cross-cutting custom hooks (useAuth)
@@ -41,13 +42,19 @@ required by the build tooling, not shown in the diagram this structure follows.
 
 ## Why `features/`
 
-Each domain — schools, teachers, MOM notes — owns its own `components/` and
-`hooks/` folder instead of dumping everything into one flat `components/`
-directory. E.g. `features/schools/hooks/useMySchools.js` handles all the
+Each domain — schools, alumni, teachers, MOM notes — owns its own `components/`
+and `hooks/` folder instead of dumping everything into one flat `components/`
+directory. E.g. `features/schools/hooks/useSchools.js` handles all the
 fetching/state for the school list, and `features/schools/components/SchoolCard.jsx`
-just renders what it's given. `TeacherCRM` and `MomNoteSection` are nested
-inside `SchoolDetailModal` but live in their own feature folders since they're
-independent domains with their own hooks.
+just renders what it's given.
+
+`TeacherCRM` and `MomNoteSection` are **shared** between `SchoolDetailModal`
+and `AlumniDetailModal` rather than duplicated — a school and an alumni entry
+can each have their own teachers and MOM notes, so both components take a
+`parentType` (`"school"` or `"alumni"`) and `parentId` prop instead of a
+school-specific one. The backend's `Teacher` and `MomNote` models mirror this
+with a polymorphic `parent_type`/`parent_id` reference rather than two
+separate collections.
 
 ## Local development
 

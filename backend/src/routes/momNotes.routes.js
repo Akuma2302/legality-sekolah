@@ -4,7 +4,7 @@ import { asyncHandler } from '../utils/asyncHandler.js';
 
 const router = express.Router();
 
-router.get('/school/:schoolId', asyncHandler(momNotesController.list));
-router.post('/school/:schoolId', asyncHandler(momNotesController.add));
+router.get('/:parentType/:parentId', asyncHandler(momNotesController.list));
+router.post('/:parentType/:parentId', asyncHandler(momNotesController.add));
 
 export default router;

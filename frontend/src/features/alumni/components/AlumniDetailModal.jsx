@@ -3,30 +3,26 @@ import Modal from '../../../components/Modal';
 import TeacherCRM from '../../teachers/components/TeacherCRM';
 import MomNoteSection from '../../mom-notes/components/MomNoteSection';
 import { api } from '../../../services/api';
-import { useAuth } from '../../../hooks/useAuth';
-import { SCHOOL_TYPES, BRANCHES, STATES, LEGALITY_STATUSES, LEGALITY_STATUS_STYLES } from '../../../utils/constants';
+import { SCHOOL_TYPES, BRANCHES, STATES, ALUMNI_STATUSES } from '../../../utils/constants';
 import { formatTimestamp } from '../../../utils/formatDate';
 
-export default function SchoolDetailModal({ school, onClose, onSaved }) {
-  const { role } = useAuth();
-  const isAdmin = role === 'admin';
-
+export default function AlumniDetailModal({ alumnus, onClose, onSaved }) {
   const [form, setForm] = useState({
-    school_name: school.school_name || '',
-    pic_name: school.pic_name || '',
-    type: school.type || SCHOOL_TYPES[0],
-    branch: school.branch || '',
-    state: school.state || '',
-    email: school.email || '',
-    contact_number: school.contact_number || '',
-    website: school.website || '',
-    tiktok: school.tiktok || '',
-    instagram: school.instagram || '',
-    note: school.note || '',
-    legality_status: school.legality_status || LEGALITY_STATUSES[LEGALITY_STATUSES.length - 1],
+    school_name: alumnus.school_name || '',
+    pic_name: alumnus.pic_name || '',
+    type: alumnus.type || SCHOOL_TYPES[0],
+    branch: alumnus.branch || '',
+    state: alumnus.state || '',
+    status: alumnus.status || '',
+    email: alumnus.email || '',
+    contact_number: alumnus.contact_number || '',
+    website: alumnus.website || '',
+    tiktok: alumnus.tiktok || '',
+    instagram: alumnus.instagram || '',
+    note: alumnus.note || '',
   });
   const [saving, setSaving] = useState(false);
-  const [savedAt, setSavedAt] = useState(school.updated_at);
+  const [savedAt, setSavedAt] = useState(alumnus.updated_at);
   const [error, setError] = useState('');
 
   const field = (key, value) => setForm((f) => ({ ...f, [key]: value }));
@@ -35,11 +31,7 @@ export default function SchoolDetailModal({ school, onClose, onSaved }) {
     setSaving(true);
     setError('');
     try {
-      const { legality_status, ...editableFields } = form;
-      let updated = await api.updateSchool(school.id, editableFields);
-      if (isAdmin) {
-        updated = await api.updateLegalityStatus(school.id, legality_status);
-      }
+      const updated = await api.updateAlumnus(alumnus.id, form);
       setSavedAt(updated.updated_at);
       onSaved?.(updated);
     } catch (err) {
@@ -50,19 +42,14 @@ export default function SchoolDetailModal({ school, onClose, onSaved }) {
   };
 
   return (
-    <Modal title={school.school_name} onClose={onClose} wide>
+    <Modal title={alumnus.school_name} onClose={onClose} wide>
       <div className="space-y-6">
-        {isAdmin && (
-          <Field label="Legality Status" hint="Only admins can see and change this.">
-            <select
-              className={`input font-medium ${LEGALITY_STATUS_STYLES[form.legality_status] || ''}`}
-              value={form.legality_status}
-              onChange={(e) => field('legality_status', e.target.value)}
-            >
-              {LEGALITY_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
-            </select>
-          </Field>
-        )}
+        <Field label="Status" hint="Tracks progress on this alumni outreach.">
+          <select className="input font-medium" value={form.status} onChange={(e) => field('status', e.target.value)}>
+            <option value="">Not started</option>
+            {ALUMNI_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+          </select>
+        </Field>
 
         <div className="grid grid-cols-2 gap-4">
           <Field label="School Name">
@@ -113,8 +100,8 @@ export default function SchoolDetailModal({ school, onClose, onSaved }) {
           />
         </Field>
 
-        <TeacherCRM parentType="school" parentId={school.id} />
-        <MomNoteSection parentType="school" parentId={school.id} />
+        <TeacherCRM parentType="alumni" parentId={alumnus.id} />
+        <MomNoteSection parentType="alumni" parentId={alumnus.id} />
 
         {error && <p className="text-sm text-red-600">{error}</p>}
 
