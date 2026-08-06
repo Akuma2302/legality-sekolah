@@ -4,10 +4,10 @@ import { toCleanJSON } from './plugins.js';
 const { Schema } = mongoose;
 
 export const SCHOOL_TYPES = ['A', 'B', 'C', 'New'];
-export const BRANCHES = ['Central', 'North', 'East Coast', 'Borneo'];
+export const BRANCHES = ['Tengah', 'Utara', 'Pantai Timur', 'Borneo'];
 export const STATES = [
   'Johor', 'Kedah', 'Kelantan', 'Melaka', 'Negeri Sembilan', 'Pahang', 'Perak',
-  'Perlis', 'Penang', 'Sabah', 'Sarawak', 'Selangor', 'Terengganu',
+  'Perlis', 'Penang', 'Sabah', 'Sarawak', 'Selangor', 'Terengganu','Putrajaya',
 ];
 export const LEGALITY_STATUSES = ['Legal w/ BnW', 'Legal w/o BnW', 'Potentially Legal', 'Not Legal'];
 
