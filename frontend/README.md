@@ -4,8 +4,24 @@ React + Vite + Tailwind, deployed on Netlify. Two portals in one app:
 
 - **User portal** (`/`) — fully public, no login. Anyone with the link can view,
   add, and edit school legality records.
-- **Admin portal** (`/admin`) — requires an admin login. Adds a Legality Status
-  control on top of the same data, plus an aggregate dashboard.
+- **Admin portal** (`/admin`) — requires an admin login. Sidebar navigation with
+  Dashboard, Legality → Schools, and Legality → Alumni. Adds a Legality Status
+  control on top of the same data the user portal writes to.
+
+## Admin UI pattern
+
+Every admin list page (`AdminSchools.jsx`, `AdminAlumni.jsx`) follows the same
+standardized layout, built from shared components in `components/`:
+
+- `StatCard.jsx` — the summary numbers at the top (Total / Completed / Pending / etc.)
+- `SearchFilterBar.jsx` — the search box + dropdown filters row
+- `Pagination.jsx` — page numbers + "Showing X to Y of Z" + per-page selector
+
+Filtering and pagination happen client-side (the data sets are small enough
+that this is simpler than adding query params to the API). Each page loads
+its full list via its feature hook (`useAllSchools`, `useAlumni`), then
+filters/paginates in a `useMemo`. Add a new admin list page by following the
+same shape: stats → `SearchFilterBar` → a card grid → `Pagination`.
 
 ## Folder structure
 
