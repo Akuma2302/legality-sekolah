@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { NavLink, Outlet } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { NavLink, Outlet, useLocation } from 'react-router-dom';
 
 const navItems = [
   { to: '/', label: 'Homepage', end: true },
@@ -14,6 +14,29 @@ const navItems = [
 
 export default function UserLayout() {
   const [openDropdown, setOpenDropdown] = useState(false);
+  const dropdownRef = useRef(null);
+  const location = useLocation();
+
+  // Close the dropdown on outside click/tap — works for mouse and touch alike
+  useEffect(() => {
+    if (!openDropdown) return;
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setOpenDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [openDropdown]);
+
+  // Close the dropdown whenever the route changes (e.g. after picking Sekolah/Alumni)
+  useEffect(() => { setOpenDropdown(false); }, [location.pathname]);
+
+  const isLegalityActive = location.pathname.startsWith('/legality');
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -30,22 +53,27 @@ export default function UserLayout() {
         <nav className="max-w-6xl mx-auto px-6 flex gap-1 border-t border-navy-800 overflow-x-auto">
           {navItems.map((item) =>
             item.dropdown ? (
-              <div
-                key={item.label}
-                className="relative"
-                onMouseEnter={() => setOpenDropdown(true)}
-                onMouseLeave={() => setOpenDropdown(false)}
-              >
-                <button className="px-4 py-3 text-sm font-medium text-navy-200 hover:text-white transition-colors whitespace-nowrap">
-                  {item.label} <span className="ml-1 text-xs">▾</span>
+              <div key={item.label} ref={dropdownRef} className="relative">
+                <button
+                  onClick={() => setOpenDropdown((open) => !open)}
+                  aria-expanded={openDropdown}
+                  className={`px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors border-b-2 ${
+                    isLegalityActive
+                      ? 'text-white border-accent-500'
+                      : 'text-navy-200 border-transparent hover:text-white'
+                  }`}
+                >
+                  {item.label} <span className={`ml-1 text-xs inline-block transition-transform ${openDropdown ? 'rotate-180' : ''}`}>▾</span>
                 </button>
                 {openDropdown && (
-                  <div className="absolute left-0 top-full bg-white text-navy-900 rounded-b-lg shadow-lg min-w-[160px] py-1">
+                  <div className="absolute left-0 top-full bg-white text-navy-900 rounded-b-lg shadow-lg min-w-[160px] py-1 z-40">
                     {item.dropdown.map((sub) => (
                       <NavLink
                         key={sub.to}
                         to={sub.to}
-                        className="block px-4 py-2 text-sm hover:bg-slate-100"
+                        className={({ isActive }) =>
+                          `block px-4 py-2 text-sm hover:bg-slate-100 ${isActive ? 'text-accent-500 font-medium' : ''}`
+                        }
                       >
                         {sub.label}
                       </NavLink>
