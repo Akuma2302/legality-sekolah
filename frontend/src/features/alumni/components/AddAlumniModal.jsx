@@ -3,7 +3,7 @@ import Modal from '../../../components/Modal';
 import { SCHOOL_TYPES } from '../../../utils/constants';
 
 export default function AddAlumniModal({ onClose, onSubmit }) {
-  const [form, setForm] = useState({ school_name: '', pic_name: '', type: SCHOOL_TYPES[0] });
+  const [form, setForm] = useState({ pic_name: '', school_name: '', type: SCHOOL_TYPES[0] });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
@@ -29,21 +29,21 @@ export default function AddAlumniModal({ onClose, onSubmit }) {
     <Modal title="Add school" onClose={onClose}>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-navy-900 mb-1">School Name</label>
-          <input
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-accent-500 focus:ring-1 focus:ring-accent-500"
-            value={form.school_name}
-            onChange={(e) => setForm({ ...form, school_name: e.target.value })}
-            placeholder="e.g. SMK Taman Ilmu"
-          />
-        </div>
-        <div>
           <label className="block text-sm font-medium text-navy-900 mb-1">PIC Name</label>
           <input
             className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-accent-500 focus:ring-1 focus:ring-accent-500"
             value={form.pic_name}
             onChange={(e) => setForm({ ...form, pic_name: e.target.value })}
             placeholder="Person in charge"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-navy-900 mb-1">School Name</label>
+          <input
+            className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-accent-500 focus:ring-1 focus:ring-accent-500"
+            value={form.school_name}
+            onChange={(e) => setForm({ ...form, school_name: e.target.value })}
+            placeholder="e.g. SMK Taman Ilmu"
           />
         </div>
         <div>
