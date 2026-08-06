@@ -1,17 +1,28 @@
 import { useState } from 'react';
 import { useAllSchools } from '../features/schools/hooks/useAllSchools';
+import { useAlumni } from '../features/alumni/hooks/useAlumni';
 import AdminSchoolTable from '../features/schools/components/AdminSchoolTable';
+import AdminAlumniTable from '../features/alumni/components/AdminAlumniTable';
 import SchoolDetailModal from '../features/schools/components/SchoolDetailModal';
-import ComingSoon from '../components/ComingSoon';
+import AlumniDetailModal from '../features/alumni/components/AlumniDetailModal';
 
 export default function AdminLegalitySekolah() {
   const [view, setView] = useState('sekolah'); // 'sekolah' | 'alumni'
-  const { schools, loading, updateLegalityStatus, applyUpdate } = useAllSchools();
-  const [selected, setSelected] = useState(null);
 
-  const handleSaved = (updated) => {
+  const { schools, loading: schoolsLoading, updateLegalityStatus, applyUpdate } = useAllSchools();
+  const { alumni, loading: alumniLoading, updateAlumnus } = useAlumni();
+
+  const [selectedSchool, setSelectedSchool] = useState(null);
+  const [selectedAlumnus, setSelectedAlumnus] = useState(null);
+
+  const handleSchoolSaved = (updated) => {
     applyUpdate(updated);
-    setSelected(updated);
+    setSelectedSchool(updated);
+  };
+
+  const handleAlumnusSaved = (updated) => {
+    updateAlumnus(updated);
+    setSelectedAlumnus(updated);
   };
 
   return (
@@ -20,7 +31,7 @@ export default function AdminLegalitySekolah() {
         <div>
           <h1 className="font-display text-2xl font-semibold text-navy-900">Legality (Sekolah)</h1>
           <p className="text-slate-500 mt-1 text-sm">
-            All schools registered by PICs, with legality status. Click a row for full details.
+            All records registered by PICs. Click a row for full details.
           </p>
         </div>
         <div className="flex bg-slate-100 rounded-lg p-1">
@@ -43,16 +54,23 @@ export default function AdminLegalitySekolah() {
         </div>
       </div>
 
-      {view === 'alumni' ? (
-        <ComingSoon label="Alumni" />
-      ) : loading ? (
-        <p className="text-sm text-slate-400">Loading schools…</p>
+      {view === 'sekolah' ? (
+        schoolsLoading ? (
+          <p className="text-sm text-slate-400">Loading schools…</p>
+        ) : (
+          <AdminSchoolTable schools={schools} onStatusChange={updateLegalityStatus} onRowClick={setSelectedSchool} />
+        )
+      ) : alumniLoading ? (
+        <p className="text-sm text-slate-400">Loading alumni…</p>
       ) : (
-        <AdminSchoolTable schools={schools} onStatusChange={updateLegalityStatus} onRowClick={setSelected} />
+        <AdminAlumniTable alumni={alumni} onRowClick={setSelectedAlumnus} />
       )}
 
-      {selected && (
-        <SchoolDetailModal school={selected} onClose={() => setSelected(null)} onSaved={handleSaved} />
+      {selectedSchool && (
+        <SchoolDetailModal school={selectedSchool} onClose={() => setSelectedSchool(null)} onSaved={handleSchoolSaved} />
+      )}
+      {selectedAlumnus && (
+        <AlumniDetailModal alumnus={selectedAlumnus} onClose={() => setSelectedAlumnus(null)} onSaved={handleAlumnusSaved} />
       )}
     </div>
   );
