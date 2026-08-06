@@ -4,7 +4,7 @@ import { toCleanJSON } from './plugins.js';
 const { Schema } = mongoose;
 
 export const SCHOOL_TYPES = ['A', 'B', 'C', 'New'];
-export const BRANCHES = ['Central', 'North', 'East Coast', 'Borneo'];
+export const BRANCHES = ['Tengah', 'Utara', 'Pantai Timur', 'Borneo'];
 export const STATES = [
   'Johor', 'Kedah', 'Kelantan', 'Melaka', 'Negeri Sembilan', 'Pahang', 'Perak',
   'Perlis', 'Penang', 'Sabah', 'Sarawak', 'Selangor', 'Terengganu',
