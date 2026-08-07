@@ -50,6 +50,13 @@ export const api = {
   updateAlumnus: (id, payload) => request(`/api/alumni/${id}`, { method: 'PUT', body: JSON.stringify(payload) }),
   deleteAlumnus: (id) => request(`/api/alumni/${id}`, { method: 'DELETE' }),
 
+  // Random
+  getRandomEntries: () => request('/api/random'),
+  createRandomEntry: (payload) => request('/api/random', { method: 'POST', body: JSON.stringify(payload) }),
+  getRandomEntry: (id) => request(`/api/random/${id}`),
+  updateRandomEntry: (id, payload) => request(`/api/random/${id}`, { method: 'PUT', body: JSON.stringify(payload) }),
+  deleteRandomEntry: (id) => request(`/api/random/${id}`, { method: 'DELETE' }),
+
   // Teachers — shared by both schools and alumni entries; parentType is 'school' | 'alumni'
   getTeachers: (parentType, parentId) => request(`/api/teachers/${parentType}/${parentId}`),
   addTeacher: (parentType, parentId, payload) =>

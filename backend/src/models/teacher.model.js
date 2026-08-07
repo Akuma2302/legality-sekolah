@@ -7,7 +7,7 @@ const { Schema } = mongoose;
 // Teachers reuse the same Malaysian state list as schools.
 export { STATES };
 
-export const PARENT_TYPES = ['School', 'Alumni'];
+export const PARENT_TYPES = ['School', 'Alumni', 'Random'];
 
 const teacherSchema = new Schema(
   {

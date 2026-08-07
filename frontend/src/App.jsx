@@ -15,6 +15,7 @@ import TDSChart from './pages/TDSChart';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminSchools from './pages/AdminSchools';
 import AdminAlumni from './pages/AdminAlumni';
+import UserLegalityRandom from './pages/UserLegalityRandom';
 
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
         <Route index element={<UserHome />} />
         <Route path="legality/sekolah" element={<UserLegalitySekolah />} />
         <Route path="legality/alumni" element={<UserLegalityAlumni />} />
+        <Route path="legality/random" element={<UserLegalityRandom />} />
         <Route path="kit-legality" element={<KitLegality />} />
         <Route path="template-form" element={<TemplateForm />} />
         <Route path="tds-chart" element={<TDSChart />} />

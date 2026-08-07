@@ -6,6 +6,7 @@ const navItems = [
   { to: '/legality', label: 'Legality', dropdown: [
     { to: '/legality/alumni', label: 'Alumni' },
     { to: '/legality/sekolah', label: 'Sekolah' },
+    { to: '/legality/random', label: 'Random' },
   ]},
   { to: '/kit-legality', label: 'Kit Legality' },
   { to: '/template-form', label: 'Template Form Program Sekolah' },

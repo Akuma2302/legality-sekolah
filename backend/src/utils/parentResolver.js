@@ -1,10 +1,12 @@
 import { schoolsRepository } from '../repositories/schools.repository.js';
 import { alumniRepository } from '../repositories/alumni.repository.js';
 import { ApiError } from './ApiError.js';
+import { randomRepository } from '../repositories/random.repository.js';
 
 const PARENT_TYPES = {
   school: { refName: 'School', repo: schoolsRepository },
   alumni: { refName: 'Alumni', repo: alumniRepository },
+  random: { refName: 'Random', repo: randomRepository }
 };
 
 /** Turns the URL segment ("school"/"alumni") into { refName, repo }, or throws 400. */
