@@ -31,7 +31,7 @@ frontend/
 ├── src/
 │   ├── assets/           # Images, icons, static media
 │   ├── components/       # Small reusable UI pieces used across features (Modal, ComingSoon, ProtectedRoute)
-│   ├── layout/            # Page shells — sidebar nav + outlet (UserLayout, AdminLayout)
+│   ├── layout/            # Page shells + outlet — UserLayout (top nav), AdminLayout (sidebar)
 │   ├── pages/              # Route-level components (one per URL)
 │   ├── features/            # Feature-based modules — each owns its components + hooks
 │   │   ├── schools/
