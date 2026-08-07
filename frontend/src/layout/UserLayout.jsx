@@ -50,7 +50,7 @@ export default function UserLayout() {
             Admin login
           </NavLink>
         </div>
-        <nav className="max-w-7xl mx-auto px-6 flex gap-1 border-t border-navy-800 overflow-x-auto">
+        <nav className="max-w-7xl mx-auto px-6 flex flex-wrap gap-1 border-t border-navy-800">
           {navItems.map((item) =>
             item.dropdown ? (
               <div key={item.label} ref={dropdownRef} className="relative">
@@ -66,13 +66,15 @@ export default function UserLayout() {
                   {item.label} <span className={`ml-1 text-xs inline-block transition-transform ${openDropdown ? 'rotate-180' : ''}`}>▾</span>
                 </button>
                 {openDropdown && (
-                  <div className="absolute left-0 top-full bg-white text-navy-900 rounded-b-lg shadow-lg min-w-[160px] py-1 z-40">
+                  <div className="absolute left-0 top-[calc(100%+4px)] bg-white text-navy-900 rounded-xl border border-slate-200 shadow-xl min-w-[180px] py-1.5 z-40 overflow-hidden">
                     {item.dropdown.map((sub) => (
                       <NavLink
                         key={sub.to}
                         to={sub.to}
                         className={({ isActive }) =>
-                          `block px-4 py-2 text-sm hover:bg-slate-100 ${isActive ? 'text-accent-500 font-medium' : ''}`
+                          `block px-4 py-2.5 text-sm transition-colors ${
+                            isActive ? 'bg-accent-50 text-accent-600 font-medium' : 'hover:bg-slate-50'
+                          }`
                         }
                       >
                         {sub.label}

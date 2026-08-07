@@ -2,24 +2,13 @@ import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAlumni } from '../features/alumni/hooks/useAlumni';
 import { useSchools } from '../features/schools/hooks/useSchools';
-import ProgramCard from '../features/alumni/components/ProgramCard';
 import AlumniDetailModal from '../features/alumni/components/AlumniDetailModal';
-import SearchFilterBar from '../components/SearchFilterBar';
-import { STATES, BRANCHES, SCHOOL_TYPE_OPTIONS } from '../utils/constants';
 
 const COMPLETED_STATUS = 'Done creating program report';
-const PREVIEW_COUNT = 6;
 
 export default function UserHome() {
-  const { alumni, loading, updateAlumnus } = useAlumni();
+  const { alumni, updateAlumnus } = useAlumni();
   const { schools } = useSchools();
-
-  const [search, setSearch] = useState('');
-  const [branchFilter, setBranchFilter] = useState('');
-  const [stateFilter, setStateFilter] = useState('');
-  const [typeFilter, setTypeFilter] = useState('');
-  const [sort, setSort] = useState('newest');
-  const [visibleCount, setVisibleCount] = useState(PREVIEW_COUNT);
   const [selected, setSelected] = useState(null);
   const [showHowItWorks, setShowHowItWorks] = useState(false);
 
@@ -29,25 +18,8 @@ export default function UserHome() {
     return { totalPrograms: alumni.length, completed, schoolsReached, totalSchools: schools.length };
   }, [alumni, schools]);
 
-  const filtered = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    let list = alumni.filter((a) => {
-      if (q && !`${a.school_name} ${a.program_propose || ''}`.toLowerCase().includes(q)) return false;
-      if (branchFilter && a.branch !== branchFilter) return false;
-      if (stateFilter && a.state !== stateFilter) return false;
-      if (typeFilter && a.school_type !== typeFilter) return false;
-      return true;
-    });
-    list = [...list].sort((a, b) =>
-      sort === 'newest'
-        ? new Date(b.created_at) - new Date(a.created_at)
-        : new Date(a.created_at) - new Date(b.created_at)
-    );
-    return list;
-  }, [alumni, search, branchFilter, stateFilter, typeFilter, sort]);
-
   const recentActivity = useMemo(
-    () => [...alumni].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 3),
+    () => [...alumni].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 5),
     [alumni]
   );
 
@@ -93,69 +65,53 @@ export default function UserHome() {
         </div>
       )}
 
-      <div className="grid grid-cols-[1fr_300px] gap-6 items-start">
+      <div className="grid grid-cols-[1fr_320px] gap-6 items-start">
         {/* Main column */}
-        <div>
-          <div className="mb-6">
-            <SearchFilterBar
-              search={search}
-              onSearchChange={(v) => { setSearch(v); setVisibleCount(PREVIEW_COUNT); }}
-              searchPlaceholder="Search school or program…"
-              filters={[
-                { label: 'All Branches', value: branchFilter, onChange: (v) => { setBranchFilter(v); setVisibleCount(PREVIEW_COUNT); }, options: BRANCHES },
-                { label: 'All States', value: stateFilter, onChange: (v) => { setStateFilter(v); setVisibleCount(PREVIEW_COUNT); }, options: STATES },
-                { label: 'All School Types', value: typeFilter, onChange: (v) => { setTypeFilter(v); setVisibleCount(PREVIEW_COUNT); }, options: SCHOOL_TYPE_OPTIONS },
-              ]}
-            />
-            <div className="flex justify-end mt-2">
-              <select
-                value={sort}
-                onChange={(e) => setSort(e.target.value)}
-                className="text-sm text-slate-500 border border-slate-200 rounded-lg px-3 py-1.5"
-              >
-                <option value="newest">Sort by: Newest</option>
-                <option value="oldest">Sort by: Oldest</option>
-              </select>
-            </div>
+        <div className="space-y-4">
+          <div className="grid grid-cols-4 gap-4">
+            <ImpactCard value={stats.totalPrograms} label="Total Programs" />
+            <ImpactCard value={stats.schoolsReached} label="Schools Reached" />
+            <ImpactCard value={stats.completed} label="Completed" />
+            <ImpactCard value={stats.totalSchools} label="Total Schools" />
           </div>
 
-          {loading ? (
-            <p className="text-sm text-slate-400">Loading programs…</p>
-          ) : filtered.length === 0 ? (
-            <p className="text-sm text-slate-400 py-12 text-center">No programs match your filters.</p>
-          ) : (
-            <>
-              <div className="grid grid-cols-2 gap-4">
-                {filtered.slice(0, visibleCount).map((a) => (
-                  <ProgramCard key={a.id} alumnus={a} onOpen={setSelected} />
-                ))}
-              </div>
-              {visibleCount < filtered.length && (
-                <div className="flex justify-center mt-6">
-                  <button
-                    onClick={() => setVisibleCount((c) => c + PREVIEW_COUNT)}
-                    className="text-sm font-medium text-navy-900 border border-slate-200 rounded-lg px-5 py-2 hover:bg-slate-50 transition-colors"
-                  >
-                    View More Programs ({filtered.length - visibleCount} more)
-                  </button>
-                </div>
-              )}
-            </>
-          )}
+          <div className="grid grid-cols-2 gap-4">
+            <Link
+              to="/legality/sekolah"
+              className="bg-white rounded-2xl border border-slate-200 p-6 hover:border-accent-400 hover:shadow-md transition-all"
+            >
+              <h3 className="font-display font-semibold text-navy-900 text-lg">Legality — Sekolah</h3>
+              <p className="text-sm text-slate-500 mt-1">Browse and manage school legality records.</p>
+              <span className="inline-block mt-3 text-sm font-medium text-accent-500">Browse schools →</span>
+            </Link>
+            <Link
+              to="/legality/alumni"
+              className="bg-white rounded-2xl border border-slate-200 p-6 hover:border-accent-400 hover:shadow-md transition-all"
+            >
+              <h3 className="font-display font-semibold text-navy-900 text-lg">Legality — Alumni</h3>
+              <p className="text-sm text-slate-500 mt-1">Browse and manage alumni outreach programs.</p>
+              <span className="inline-block mt-3 text-sm font-medium text-accent-500">Browse programs →</span>
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-3 gap-4">
+            <a href="/kit-legality" className="bg-white rounded-2xl border border-slate-200 p-5 hover:border-accent-400 hover:shadow-md transition-all">
+              <h3 className="font-display font-semibold text-navy-900">Kit Legality</h3>
+              <p className="text-sm text-slate-500 mt-1">Resources and documents for legality processes.</p>
+            </a>
+            <a href="/template-form" className="bg-white rounded-2xl border border-slate-200 p-5 hover:border-accent-400 hover:shadow-md transition-all">
+              <h3 className="font-display font-semibold text-navy-900">Template Form Program Sekolah</h3>
+              <p className="text-sm text-slate-500 mt-1">Program templates and forms.</p>
+            </a>
+            <a href="/tds-chart" className="bg-white rounded-2xl border border-slate-200 p-5 hover:border-accent-400 hover:shadow-md transition-all">
+              <h3 className="font-display font-semibold text-navy-900">TDS Organisation Chart</h3>
+              <p className="text-sm text-slate-500 mt-1">See the full organisation structure.</p>
+            </a>
+          </div>
         </div>
 
         {/* Sidebar */}
         <div className="space-y-4">
-          <div className="bg-white rounded-2xl border border-slate-200 p-5">
-            <h3 className="font-display font-semibold text-navy-900 text-sm mb-4">Outreach Impact</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <ImpactStat value={stats.totalPrograms} label="Total Programs" />
-              <ImpactStat value={stats.schoolsReached} label="Schools Reached" />
-              <ImpactStat value={stats.completed} label="Completed" />
-              <ImpactStat value={stats.totalSchools} label="Total Schools" />
-            </div>
-          </div>
-
           {recentActivity.length > 0 && (
             <div className="bg-white rounded-2xl border border-slate-200 p-5">
               <h3 className="font-display font-semibold text-navy-900 text-sm mb-4">Recent Activity</h3>
@@ -209,9 +165,9 @@ function formatShortDate(iso) {
   return new Date(iso).toLocaleDateString('en-MY', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
-function ImpactStat({ value, label }) {
+function ImpactCard({ value, label }) {
   return (
-    <div>
+    <div className="bg-white rounded-2xl border border-slate-200 p-4">
       <p className="text-2xl font-display font-semibold text-navy-900">{value}</p>
       <p className="text-xs text-slate-500 mt-0.5">{label}</p>
     </div>
