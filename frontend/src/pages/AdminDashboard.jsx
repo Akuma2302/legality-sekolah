@@ -21,7 +21,7 @@ export default function AdminDashboard() {
       {loading ? (
         <p className="text-sm text-slate-400 mt-6">Loading…</p>
       ) : (
-        <div className="grid grid-cols-4 gap-4 mt-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
           <StatCard icon={<SchoolIcon />} label="Total Schools" value={schools.length} sublabel="All records" color="blue" />
           <StatCard icon={<CheckIcon />} label="Legal Schools" value={legalCount} sublabel={`${pct(legalCount, schools.length)}% of total`} color="green" />
           <StatCard icon={<PeopleIcon />} label="Total Alumni" value={alumni.length} sublabel="All records" color="purple" />
@@ -29,7 +29,7 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      <div className="grid grid-cols-2 gap-4 mt-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
         <Link
           to="/admin/legality/schools"
           className="bg-white rounded-2xl border border-slate-200 p-5 hover:border-accent-400 hover:shadow-md transition-all"

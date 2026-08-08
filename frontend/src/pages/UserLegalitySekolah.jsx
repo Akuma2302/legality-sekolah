@@ -54,14 +54,14 @@ export default function UserLegalitySekolah() {
 
   return (
     <div>
-      <div className="flex items-start justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-6">
         <div>
           <h1 className="font-display text-2xl font-semibold text-navy-900">Legality — Sekolah</h1>
           <p className="text-slate-500 mt-1 text-sm">Browse and manage school legality records.</p>
         </div>
         <button
           onClick={() => setShowAdd(true)}
-          className="bg-navy-900 text-white rounded-lg px-4 py-2.5 text-sm font-medium hover:bg-navy-800 transition-colors flex items-center gap-1.5"
+          className="bg-navy-900 text-white rounded-lg px-4 py-2.5 text-sm font-medium hover:bg-navy-800 transition-colors flex items-center justify-center gap-1.5 w-full sm:w-auto"
         >
           <span className="text-lg leading-none">+</span> Add School
         </button>
@@ -96,7 +96,7 @@ export default function UserLegalitySekolah() {
         <p className="text-sm text-slate-400 py-12 text-center">No schools match your filters.</p>
       ) : (
         <>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {paged.map((s) => (
               <SchoolBrowseCard key={s.id} school={s} onOpen={setSelected} />
             ))}

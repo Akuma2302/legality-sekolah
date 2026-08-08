@@ -50,20 +50,20 @@ export const api = {
   updateAlumnus: (id, payload) => request(`/api/alumni/${id}`, { method: 'PUT', body: JSON.stringify(payload) }),
   deleteAlumnus: (id) => request(`/api/alumni/${id}`, { method: 'DELETE' }),
 
-  // Random
+  // Random — public, same shape as alumni
   getRandomEntries: () => request('/api/random'),
   createRandomEntry: (payload) => request('/api/random', { method: 'POST', body: JSON.stringify(payload) }),
   getRandomEntry: (id) => request(`/api/random/${id}`),
   updateRandomEntry: (id, payload) => request(`/api/random/${id}`, { method: 'PUT', body: JSON.stringify(payload) }),
   deleteRandomEntry: (id) => request(`/api/random/${id}`, { method: 'DELETE' }),
 
-  // Teachers — shared by both schools and alumni entries; parentType is 'school' | 'alumni'
+  // Teachers — shared by schools, alumni and random entries; parentType is 'school' | 'alumni' | 'random'
   getTeachers: (parentType, parentId) => request(`/api/teachers/${parentType}/${parentId}`),
   addTeacher: (parentType, parentId, payload) =>
     request(`/api/teachers/${parentType}/${parentId}`, { method: 'POST', body: JSON.stringify(payload) }),
   deleteTeacher: (id) => request(`/api/teachers/${id}`, { method: 'DELETE' }),
 
-  // MOM notes — shared by both schools and alumni entries
+  // MOM notes — shared by schools, alumni and random entries
   getMomNotes: (parentType, parentId) => request(`/api/mom-notes/${parentType}/${parentId}`),
   addMomNote: (parentType, parentId, content) =>
     request(`/api/mom-notes/${parentType}/${parentId}`, { method: 'POST', body: JSON.stringify({ content }) }),

@@ -10,7 +10,7 @@ export default function Pagination({ page, pageSize, total, onPageChange, onPage
   if (total === 0) return null;
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
+    <div className="flex flex-wrap items-center justify-center sm:justify-between gap-4 pt-2 text-center sm:text-left">
       <p className="text-sm text-slate-500">
         Showing {start} to {end} of {total} results
       </p>

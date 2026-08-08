@@ -46,7 +46,7 @@ export default function AlumniDetailModal({ alumnus, onClose, onSaved }) {
   return (
     <Modal title={alumnus.school_name} onClose={onClose} wide>
       <div className="space-y-6">
-        <div className="flex items-start gap-3">
+        <div className="flex flex-col sm:flex-row sm:items-start gap-3">
           <div className="flex-1">
             <Field label="Status" hint="Tracks progress on this alumni outreach.">
               <select className="input font-medium" value={form.status} onChange={(e) => field('status', e.target.value)}>
@@ -58,13 +58,13 @@ export default function AlumniDetailModal({ alumnus, onClose, onSaved }) {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="mt-6 bg-navy-900 text-white rounded-lg px-5 py-2 text-sm font-medium hover:bg-navy-800 disabled:opacity-50 whitespace-nowrap"
+            className="w-full sm:w-auto sm:mt-6 bg-navy-900 text-white rounded-lg px-5 py-2 text-sm font-medium hover:bg-navy-800 disabled:opacity-50 whitespace-nowrap"
           >
             {saving ? 'Saving…' : 'Save'}
           </button>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Field label="School Name">
             <input className="input" value={form.school_name} onChange={(e) => field('school_name', e.target.value)} />
           </Field>

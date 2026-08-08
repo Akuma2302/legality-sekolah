@@ -36,7 +36,7 @@ export default function TeacherCRM({ parentType, parentId }) {
       </div>
 
       {showForm && (
-        <form onSubmit={handleAdd} className="grid grid-cols-2 gap-3 mb-4 bg-slate-50 rounded-lg p-4">
+        <form onSubmit={handleAdd} className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 bg-slate-50 rounded-lg p-4">
           <input
             className="col-span-2 rounded-lg border border-slate-300 px-3 py-2 text-sm"
             placeholder="Teacher Name"

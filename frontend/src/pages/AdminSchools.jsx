@@ -50,14 +50,14 @@ export default function AdminSchools() {
 
   return (
     <div>
-      <div className="flex items-start justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-6">
         <div>
           <h1 className="font-display text-2xl font-semibold text-navy-900">Legality Schools</h1>
           <p className="text-slate-500 mt-1 text-sm">All schools registered by PICs, with legality status.</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <StatCard icon={<SchoolIcon />} label="Total Schools" value={stats.total} sublabel="All records" color="blue" />
         <StatCard icon={<CheckIcon />} label="Legal" value={stats.legal} sublabel={`${pct(stats.legal, stats.total)}% of total`} color="green" />
         <StatCard icon={<ClockIcon />} label="Potentially Legal" value={stats.potential} sublabel={`${pct(stats.potential, stats.total)}% of total`} color="amber" />
@@ -84,7 +84,7 @@ export default function AdminSchools() {
         <p className="text-sm text-slate-400 py-12 text-center">No schools match your filters.</p>
       ) : (
         <>
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {paged.map((s) => (
               <AdminSchoolCard key={s.id} school={s} onOpen={setSelected} />
             ))}

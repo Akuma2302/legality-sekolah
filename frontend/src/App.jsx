@@ -8,6 +8,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import UserHome from './pages/UserHome';
 import UserLegalitySekolah from './pages/UserLegalitySekolah';
 import UserLegalityAlumni from './pages/UserLegalityAlumni';
+import UserLegalityRandom from './pages/UserLegalityRandom';
 import KitLegality from './pages/KitLegality';
 import TemplateForm from './pages/TemplateForm';
 import TDSChart from './pages/TDSChart';
@@ -15,7 +16,6 @@ import TDSChart from './pages/TDSChart';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminSchools from './pages/AdminSchools';
 import AdminAlumni from './pages/AdminAlumni';
-import UserLegalityRandom from './pages/UserLegalityRandom';
 
 export default function App() {
   return (

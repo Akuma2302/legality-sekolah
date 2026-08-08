@@ -59,20 +59,20 @@ export default function AdminAlumni() {
 
   return (
     <div>
-      <div className="flex items-start justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-6">
         <div>
           <h1 className="font-display text-2xl font-semibold text-navy-900">Legality Alumni</h1>
           <p className="text-slate-500 mt-1 text-sm">Manage alumni outreach records and their outreach progress.</p>
         </div>
         <button
           onClick={() => setShowAdd(true)}
-          className="bg-accent-500 text-white rounded-lg px-4 py-2.5 text-sm font-medium hover:bg-accent-400 transition-colors flex items-center gap-1.5"
+          className="bg-accent-500 text-white rounded-lg px-4 py-2.5 text-sm font-medium hover:bg-accent-400 transition-colors flex items-center justify-center gap-1.5 w-full sm:w-auto"
         >
           <span className="text-lg leading-none">+</span> Add Alumni
         </button>
       </div>
 
-      <div className="grid grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <StatCard icon={<PeopleIcon />} label="Total Alumni" value={stats.total} sublabel="All records" color="blue" />
         <StatCard icon={<CheckIcon />} label="Completed" value={stats.completed} sublabel={`${pct(stats.completed, stats.total)}% of total`} color="green" />
         <StatCard icon={<ClockIcon />} label="Pending" value={stats.pending} sublabel={`${pct(stats.pending, stats.total)}% of total`} color="amber" />
@@ -99,7 +99,7 @@ export default function AdminAlumni() {
         <p className="text-sm text-slate-400 py-12 text-center">No alumni entries match your filters.</p>
       ) : (
         <>
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {paged.map((a) => (
               <AdminAlumniCard key={a.id} alumnus={a} onOpen={setSelected} />
             ))}

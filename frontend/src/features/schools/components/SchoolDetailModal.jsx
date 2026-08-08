@@ -64,7 +64,7 @@ export default function SchoolDetailModal({ school, onClose, onSaved }) {
           </Field>
         )}
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Field label="School Name">
             <input className="input" value={form.school_name} onChange={(e) => field('school_name', e.target.value)} />
           </Field>
