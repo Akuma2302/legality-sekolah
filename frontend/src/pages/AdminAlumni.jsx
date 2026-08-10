@@ -7,6 +7,7 @@ import StatCard from '../components/StatCard';
 import SearchFilterBar from '../components/SearchFilterBar';
 import Pagination from '../components/Pagination';
 import DonutChart from '../components/DonutChart';
+import Modal from '../components/Modal';
 import { STATES, BRANCHES, SCHOOL_TYPE_OPTIONS, ALUMNI_STATUSES, ALUMNI_STATUS_CHART_COLORS } from '../utils/constants';
 
 const COMPLETED_STATUS = 'Done creating program report';
@@ -24,6 +25,7 @@ export default function AdminAlumni() {
 
   const [showAdd, setShowAdd] = useState(false);
   const [selected, setSelected] = useState(null);
+  const [viewingStatus, setViewingStatus] = useState(null);
 
   const stats = useMemo(() => {
     const completed = alumni.filter((a) => a.status === COMPLETED_STATUS).length;
@@ -63,6 +65,12 @@ export default function AdminAlumni() {
 
   const paged = filtered.slice((page - 1) * pageSize, page * pageSize);
 
+  const alumniForViewingStatus = useMemo(() => {
+    if (!viewingStatus) return [];
+    if (viewingStatus === 'Not started') return alumni.filter((a) => !a.status);
+    return alumni.filter((a) => a.status === viewingStatus);
+  }, [alumni, viewingStatus]);
+
   const handleAdd = async (payload) => {
     const created = await addAlumnus(payload);
     setSelected(created);
@@ -76,8 +84,7 @@ export default function AdminAlumni() {
   const resetToFirstPage = (setter) => (value) => { setter(value); setPage(1); };
 
   const handleStatusClick = (label) => {
-    setStatusFilter((prev) => (prev === label ? '' : label));
-    setPage(1);
+    setViewingStatus(label);
   };
 
   return (
@@ -111,7 +118,7 @@ export default function AdminAlumni() {
             segments={statusBreakdown}
             centerValue={stats.total}
             centerLabel="Total"
-            activeLabel={statusFilter || null}
+            activeLabel={viewingStatus}
             onSegmentClick={handleStatusClick}
           />
         )}
@@ -151,6 +158,27 @@ export default function AdminAlumni() {
       {showAdd && <AddAlumniModal onClose={() => setShowAdd(false)} onSubmit={handleAdd} />}
       {selected && (
         <AlumniDetailModal alumnus={selected} onClose={() => setSelected(null)} onSaved={handleSaved} />
+      )}
+      {viewingStatus && (
+        <Modal title={viewingStatus} onClose={() => setViewingStatus(null)}>
+          {alumniForViewingStatus.length === 0 ? (
+            <p className="text-sm text-slate-400 py-6 text-center">No alumni have this status.</p>
+          ) : (
+            <ul className="divide-y divide-slate-100 -mx-2">
+              {alumniForViewingStatus.map((a) => (
+                <li key={a.id}>
+                  <button
+                    onClick={() => { setSelected(a); setViewingStatus(null); }}
+                    className="w-full text-left px-2 py-3 hover:bg-slate-50 rounded-lg transition-colors"
+                  >
+                    <p className="text-sm font-medium text-navy-900">{a.pic_name}</p>
+                    <p className="text-xs text-slate-500">{a.school_name}</p>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Modal>
       )}
     </div>
   );
