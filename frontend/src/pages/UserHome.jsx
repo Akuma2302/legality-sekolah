@@ -11,7 +11,7 @@ export default function UserHome() {
   const { entries } = useRandomEntries();
   const [showHowItWorks, setShowHowItWorks] = useState(false);
 
-  const FULL_BLEED = 'relative left-1/2 right-1/2 -mx-[50vw] w-screen';
+  const FULL_BLEED = 'w-screen mx-[calc(50%-50vw)]';
 
   return (
     <div className="-mt-8 overflow-x-hidden">
