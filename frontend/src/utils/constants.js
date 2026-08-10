@@ -35,4 +35,14 @@ export const ALUMNI_STATUS_STYLES = {
 /** Empty status ("Not started") falls back to this. */
 export const NOT_STARTED_STYLE = 'bg-slate-100 text-slate-500 border-slate-200';
 
+/** Distinct colors per status for the donut chart — badge styles above reuse colors in pairs, but chart segments need to be visually distinguishable. */
+export const ALUMNI_STATUS_CHART_COLORS = {
+  'Not started': '#94a3b8',
+  'Done messaging teacher': '#f59e0b',
+  'Done proposing talk': '#fb923c',
+  'Done getting talk date': '#38bdf8',
+  'Done talk preparation': '#3b82f6',
+  'Done creating program report': '#10b981',
+};
+
 export const SCHOOL_TYPE_OPTIONS = ['Harian', 'Asrama', 'Harian & Asrama'];

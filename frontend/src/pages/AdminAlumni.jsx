@@ -6,7 +6,8 @@ import AlumniDetailModal from '../features/alumni/components/AlumniDetailModal';
 import StatCard from '../components/StatCard';
 import SearchFilterBar from '../components/SearchFilterBar';
 import Pagination from '../components/Pagination';
-import { STATES, BRANCHES, SCHOOL_TYPE_OPTIONS, ALUMNI_STATUSES } from '../utils/constants';
+import DonutChart from '../components/DonutChart';
+import { STATES, BRANCHES, SCHOOL_TYPE_OPTIONS, ALUMNI_STATUSES, ALUMNI_STATUS_CHART_COLORS } from '../utils/constants';
 
 const COMPLETED_STATUS = 'Done creating program report';
 
@@ -29,6 +30,19 @@ export default function AdminAlumni() {
     const pending = alumni.filter((a) => a.status && a.status !== COMPLETED_STATUS).length;
     const schoolCount = new Set(alumni.map((a) => a.school_name)).size;
     return { total: alumni.length, completed, pending, schoolCount };
+  }, [alumni]);
+
+  const statusBreakdown = useMemo(() => {
+    const notStarted = alumni.filter((a) => !a.status).length;
+    const segments = [{ label: 'Not started', value: notStarted, color: ALUMNI_STATUS_CHART_COLORS['Not started'] }];
+    for (const status of ALUMNI_STATUSES) {
+      segments.push({
+        label: status,
+        value: alumni.filter((a) => a.status === status).length,
+        color: ALUMNI_STATUS_CHART_COLORS[status],
+      });
+    }
+    return segments;
   }, [alumni]);
 
   const filtered = useMemo(() => {
@@ -77,6 +91,15 @@ export default function AdminAlumni() {
         <StatCard icon={<CheckIcon />} label="Completed" value={stats.completed} sublabel={`${pct(stats.completed, stats.total)}% of total`} color="green" />
         <StatCard icon={<ClockIcon />} label="Pending" value={stats.pending} sublabel={`${pct(stats.pending, stats.total)}% of total`} color="amber" />
         <StatCard icon={<SchoolIcon />} label="Schools" value={stats.schoolCount} sublabel="Distinct schools" color="purple" />
+      </div>
+
+      <div className="bg-white rounded-2xl border border-slate-200 p-6 mb-6">
+        <h2 className="font-display font-semibold text-navy-900 text-sm mb-4">Status Breakdown</h2>
+        {loading ? (
+          <p className="text-sm text-slate-400">Loading…</p>
+        ) : (
+          <DonutChart segments={statusBreakdown} centerValue={stats.total} centerLabel="Total" />
+        )}
       </div>
 
       <div className="mb-6">
