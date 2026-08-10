@@ -80,6 +80,25 @@ export default function AdminAlumni() {
     );
   };
 
+  const [generatingPdf, setGeneratingPdf] = useState(false);
+
+  const handleDownloadStatusListPdf = async () => {
+    setGeneratingPdf(true);
+    try {
+      const { downloadPdf } = await import('../utils/exportPdf');
+      const generatedOn = new Date().toLocaleDateString('en-MY', { day: 'numeric', month: 'short', year: 'numeric' });
+      downloadPdf(
+        `alumni-${slugify(viewingStatus)}.pdf`,
+        viewingStatus,
+        `${alumniForViewingStatus.length} alumni · Generated ${generatedOn}`,
+        ['PIC Name', 'School Name', 'State', 'Branch'],
+        alumniForViewingStatus.map((a) => [a.pic_name, a.school_name, a.state || '—', a.branch || '—'])
+      );
+    } finally {
+      setGeneratingPdf(false);
+    }
+  };
+
   const handleAdd = async (payload) => {
     const created = await addAlumnus(payload);
     setSelected(created);
@@ -172,13 +191,22 @@ export default function AdminAlumni() {
         <Modal title={viewingStatus} onClose={() => setViewingStatus(null)}>
           <div className="flex items-center justify-between mb-3">
             <p className="text-xs text-slate-400">{alumniForViewingStatus.length} alumni</p>
-            <button
-              onClick={handleDownloadStatusList}
-              disabled={alumniForViewingStatus.length === 0}
-              className="flex items-center gap-1.5 text-sm font-medium text-navy-900 border border-slate-200 rounded-lg px-3 py-1.5 hover:bg-slate-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              <DownloadIcon /> Download CSV
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleDownloadStatusList}
+                disabled={alumniForViewingStatus.length === 0}
+                className="flex items-center gap-1.5 text-sm font-medium text-navy-900 border border-slate-200 rounded-lg px-3 py-1.5 hover:bg-slate-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <DownloadIcon /> CSV
+              </button>
+              <button
+                onClick={handleDownloadStatusListPdf}
+                disabled={alumniForViewingStatus.length === 0 || generatingPdf}
+                className="flex items-center gap-1.5 text-sm font-medium text-navy-900 border border-slate-200 rounded-lg px-3 py-1.5 hover:bg-slate-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <DownloadIcon /> {generatingPdf ? 'Preparing…' : 'PDF'}
+              </button>
+            </div>
           </div>
           {alumniForViewingStatus.length === 0 ? (
             <p className="text-sm text-slate-400 py-6 text-center">No alumni have this status.</p>
