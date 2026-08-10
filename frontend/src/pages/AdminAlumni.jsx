@@ -9,6 +9,7 @@ import Pagination from '../components/Pagination';
 import DonutChart from '../components/DonutChart';
 import Modal from '../components/Modal';
 import { STATES, BRANCHES, SCHOOL_TYPE_OPTIONS, ALUMNI_STATUSES, ALUMNI_STATUS_CHART_COLORS } from '../utils/constants';
+import { downloadCsv, slugify } from '../utils/exportCsv';
 
 const COMPLETED_STATUS = 'Done creating program report';
 
@@ -70,6 +71,14 @@ export default function AdminAlumni() {
     if (viewingStatus === 'Not started') return alumni.filter((a) => !a.status);
     return alumni.filter((a) => a.status === viewingStatus);
   }, [alumni, viewingStatus]);
+
+  const handleDownloadStatusList = () => {
+    downloadCsv(
+      `alumni-${slugify(viewingStatus)}.csv`,
+      ['PIC Name', 'School Name', 'State', 'Branch'],
+      alumniForViewingStatus.map((a) => [a.pic_name, a.school_name, a.state || '', a.branch || ''])
+    );
+  };
 
   const handleAdd = async (payload) => {
     const created = await addAlumnus(payload);
@@ -161,6 +170,16 @@ export default function AdminAlumni() {
       )}
       {viewingStatus && (
         <Modal title={viewingStatus} onClose={() => setViewingStatus(null)}>
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-xs text-slate-400">{alumniForViewingStatus.length} alumni</p>
+            <button
+              onClick={handleDownloadStatusList}
+              disabled={alumniForViewingStatus.length === 0}
+              className="flex items-center gap-1.5 text-sm font-medium text-navy-900 border border-slate-200 rounded-lg px-3 py-1.5 hover:bg-slate-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              <DownloadIcon /> Download CSV
+            </button>
+          </div>
           {alumniForViewingStatus.length === 0 ? (
             <p className="text-sm text-slate-400 py-6 text-center">No alumni have this status.</p>
           ) : (
@@ -215,6 +234,14 @@ function SchoolIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
       <path d="M4 21V9l8-5 8 5v12" /><path d="M9 21v-6h6v6" />
+    </svg>
+  );
+}
+function DownloadIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <path d="M12 3v13M7 11l5 5 5-5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M4 19h16" strokeLinecap="round" />
     </svg>
   );
 }
