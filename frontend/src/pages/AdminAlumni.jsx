@@ -52,7 +52,11 @@ export default function AdminAlumni() {
       if (stateFilter && a.state !== stateFilter) return false;
       if (branchFilter && a.branch !== branchFilter) return false;
       if (schoolTypeFilter && a.school_type !== schoolTypeFilter) return false;
-      if (statusFilter && a.status !== statusFilter) return false;
+      if (statusFilter === 'Not started') {
+        if (a.status) return false;
+      } else if (statusFilter && a.status !== statusFilter) {
+        return false;
+      }
       return true;
     });
   }, [alumni, search, stateFilter, branchFilter, schoolTypeFilter, statusFilter]);
@@ -70,6 +74,11 @@ export default function AdminAlumni() {
   };
 
   const resetToFirstPage = (setter) => (value) => { setter(value); setPage(1); };
+
+  const handleStatusClick = (label) => {
+    setStatusFilter((prev) => (prev === label ? '' : label));
+    setPage(1);
+  };
 
   return (
     <div>
@@ -98,7 +107,13 @@ export default function AdminAlumni() {
         {loading ? (
           <p className="text-sm text-slate-400">Loading…</p>
         ) : (
-          <DonutChart segments={statusBreakdown} centerValue={stats.total} centerLabel="Total" />
+          <DonutChart
+            segments={statusBreakdown}
+            centerValue={stats.total}
+            centerLabel="Total"
+            activeLabel={statusFilter || null}
+            onSegmentClick={handleStatusClick}
+          />
         )}
       </div>
 
@@ -111,7 +126,7 @@ export default function AdminAlumni() {
             { label: 'All States', value: stateFilter, onChange: resetToFirstPage(setStateFilter), options: STATES },
             { label: 'All Branches', value: branchFilter, onChange: resetToFirstPage(setBranchFilter), options: BRANCHES },
             { label: 'All School Types', value: schoolTypeFilter, onChange: resetToFirstPage(setSchoolTypeFilter), options: SCHOOL_TYPE_OPTIONS },
-            { label: 'All Statuses', value: statusFilter, onChange: resetToFirstPage(setStatusFilter), options: ALUMNI_STATUSES },
+            { label: 'All Statuses', value: statusFilter, onChange: resetToFirstPage(setStatusFilter), options: ['Not started', ...ALUMNI_STATUSES] },
           ]}
         />
       </div>

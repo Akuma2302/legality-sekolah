@@ -4,8 +4,9 @@ const RADIUS = (SIZE - THICKNESS) / 2;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 const GAP = 6; // px gap between segments, purely visual
 
-export default function DonutChart({ segments, centerLabel, centerValue }) {
+export default function DonutChart({ segments, centerLabel, centerValue, activeLabel, onSegmentClick }) {
   const total = segments.reduce((sum, s) => sum + s.value, 0);
+  const clickable = typeof onSegmentClick === 'function';
 
   let cumulative = 0;
   const arcs = segments
@@ -17,6 +18,8 @@ export default function DonutChart({ segments, centerLabel, centerValue }) {
       cumulative += s.value;
       return { ...s, length, offset, fraction };
     });
+
+  const isDimmed = (label) => clickable && activeLabel && activeLabel !== label;
 
   return (
     <div className="flex items-center gap-6 flex-wrap">
@@ -35,7 +38,12 @@ export default function DonutChart({ segments, centerLabel, centerValue }) {
               strokeDasharray={`${a.length} ${CIRCUMFERENCE - a.length}`}
               strokeDashoffset={a.offset}
               strokeLinecap="round"
-            />
+              opacity={isDimmed(a.label) ? 0.3 : 1}
+              onClick={clickable ? () => onSegmentClick(a.label) : undefined}
+              className={clickable ? 'cursor-pointer transition-opacity' : 'transition-opacity'}
+            >
+              <title>{a.label}</title>
+            </circle>
           ))}
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
@@ -44,15 +52,28 @@ export default function DonutChart({ segments, centerLabel, centerValue }) {
         </div>
       </div>
 
-      <ul className="space-y-2 min-w-[200px]">
-        {segments.map((s) => (
-          <li key={s.label} className="flex items-center gap-2 text-sm">
-            <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: s.color }} />
-            <span className="text-slate-600 flex-1 truncate">{s.label}</span>
-            <span className="text-slate-400 text-xs">{total > 0 ? Math.round((s.value / total) * 100) : 0}%</span>
-            <span className="font-medium text-navy-900 w-6 text-right">{s.value}</span>
-          </li>
-        ))}
+      <ul className="space-y-1 min-w-[220px]">
+        {segments.map((s) => {
+          const active = activeLabel === s.label;
+          const Row = clickable ? 'button' : 'div';
+          return (
+            <li key={s.label}>
+              <Row
+                onClick={clickable ? () => onSegmentClick(s.label) : undefined}
+                className={`w-full flex items-center gap-2 text-sm rounded-lg px-2 py-1.5 -mx-2 transition-colors ${
+                  clickable ? 'hover:bg-slate-50 cursor-pointer' : ''
+                } ${active ? 'bg-accent-50' : ''} ${isDimmed(s.label) ? 'opacity-50' : ''}`}
+              >
+                <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: s.color }} />
+                <span className={`flex-1 truncate text-left ${active ? 'text-accent-600 font-medium' : 'text-slate-600'}`}>
+                  {s.label}
+                </span>
+                <span className="text-slate-400 text-xs">{total > 0 ? Math.round((s.value / total) * 100) : 0}%</span>
+                <span className="font-medium text-navy-900 w-6 text-right">{s.value}</span>
+              </Row>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
