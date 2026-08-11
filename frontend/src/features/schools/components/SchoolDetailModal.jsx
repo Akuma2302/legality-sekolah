@@ -114,7 +114,13 @@ export default function SchoolDetailModal({ school, onClose, onSaved }) {
         </Field>
 
         <TeacherCRM parentType="school" parentId={school.id} />
-        <MomNoteSection parentType="school" parentId={school.id} />
+        <MomNoteSection
+          parentType="school"
+          parentId={school.id}
+          title="Weekly Update"
+          addLabel="+ Add Update"
+          placeholder="Write this week's update, follow-ups, or anything the PIC needs to record…"
+        />
 
         {error && <p className="text-sm text-red-600">{error}</p>}
 
