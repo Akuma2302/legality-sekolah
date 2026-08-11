@@ -32,10 +32,16 @@ function formatWeekLabel(start, end) {
 }
 
 /**
- * Builds the list of week options for a dropdown: every week that actually has
- * an entry, plus the current week (even if empty), newest first.
+ * Builds the list of week options for a dropdown: a rolling window from
+ * `pastWeeks` weeks ago through `futureWeeks` weeks ahead of today (always
+ * shown, even if empty), unioned with any week that actually has an entry
+ * (so older data further back than the window is never hidden). Newest first.
+ *
+ * The window is computed from `new Date()` at call time, so it automatically
+ * slides forward every week without any code change — "next week" today
+ * becomes "this week" next week, on its own.
  */
-export function buildWeekOptions(entries, dateField = 'created_at') {
+export function buildWeekOptions(entries, dateField = 'created_at', { pastWeeks = 8, futureWeeks = 1 } = {}) {
   const weeks = new Map();
 
   const addWeekFor = (date) => {
@@ -45,13 +51,24 @@ export function buildWeekOptions(entries, dateField = 'created_at') {
     return key;
   };
 
-  const currentWeekKey = addWeekFor(new Date());
+  const today = new Date();
+  const currentWeekKey = addWeekFor(today);
+  const { start: currentStart } = getWeekRange(today);
+
+  let nextWeekKey = currentWeekKey;
+  for (let i = -pastWeeks; i <= futureWeeks; i++) {
+    const weekStart = new Date(currentStart.getFullYear(), currentStart.getMonth(), currentStart.getDate() + i * 7);
+    const key = addWeekFor(weekStart);
+    if (i === 1) nextWeekKey = key;
+  }
+
+  // Union in any week with a real entry, even if it's older than the rolling window covers
   for (const entry of entries) {
     if (entry[dateField]) addWeekFor(new Date(entry[dateField]));
   }
 
   const options = [...weeks.values()].sort((a, b) => b.start - a.start);
-  return { options, currentWeekKey };
+  return { options, currentWeekKey, nextWeekKey };
 }
 
 /** True if `date` falls within the week identified by `key` (that week's local Sunday, YYYY-MM-DD). */

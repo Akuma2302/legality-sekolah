@@ -15,7 +15,7 @@ export default function MomNoteSection({
   const [text, setText] = useState('');
   const [saving, setSaving] = useState(false);
 
-  const { options: weekOptions, currentWeekKey } = useMemo(() => buildWeekOptions(notes), [notes]);
+  const { options: weekOptions, currentWeekKey, nextWeekKey } = useMemo(() => buildWeekOptions(notes), [notes]);
   const [selectedWeek, setSelectedWeek] = useState(currentWeekKey);
 
   // Keep the selection valid if the notes list changes (e.g. right after adding the first entry)
@@ -48,7 +48,11 @@ export default function MomNoteSection({
           >
             {weekOptions.map((w) => (
               <option key={w.key} value={w.key}>
-                {w.key === currentWeekKey ? `This week (${w.label})` : w.label}
+                {w.key === currentWeekKey
+                  ? `This week (${w.label})`
+                  : w.key === nextWeekKey
+                    ? `Next week (${w.label})`
+                    : w.label}
               </option>
             ))}
           </select>
