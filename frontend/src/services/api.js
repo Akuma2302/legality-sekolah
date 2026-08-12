@@ -67,4 +67,7 @@ export const api = {
   getMomNotes: (parentType, parentId) => request(`/api/mom-notes/${parentType}/${parentId}`),
   addMomNote: (parentType, parentId, content) =>
     request(`/api/mom-notes/${parentType}/${parentId}`, { method: 'POST', body: JSON.stringify({ content }) }),
+  updateMomNote: (id, content) =>
+    request(`/api/mom-notes/${id}`, { method: 'PUT', body: JSON.stringify({ content }) }),
+  deleteMomNote: (id) => request(`/api/mom-notes/${id}`, { method: 'DELETE' }),
 };

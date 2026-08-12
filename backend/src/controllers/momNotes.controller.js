@@ -9,4 +9,13 @@ export const momNotesController = {
     const note = await momNotesService.add(req.params.parentType, req.params.parentId, req.body);
     res.status(201).json(note);
   },
+
+  update: async (req, res) => {
+    res.json(await momNotesService.update(req.params.id, req.body));
+  },
+
+  remove: async (req, res) => {
+    await momNotesService.remove(req.params.id);
+    res.status(204).send();
+  },
 };

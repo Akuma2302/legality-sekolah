@@ -12,7 +12,7 @@ const momNoteSchema = new Schema(
 
     content: { type: String, required: true },
   },
-  { timestamps: { createdAt: 'created_at', updatedAt: false } }
+  { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } }
 );
 
 momNoteSchema.index({ parent_type: 1, parent_id: 1 });

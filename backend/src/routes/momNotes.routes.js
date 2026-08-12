@@ -6,5 +6,7 @@ const router = express.Router();
 
 router.get('/:parentType/:parentId', asyncHandler(momNotesController.list));
 router.post('/:parentType/:parentId', asyncHandler(momNotesController.add));
+router.put('/:id', asyncHandler(momNotesController.update));
+router.delete('/:id', asyncHandler(momNotesController.remove));
 
 export default router;

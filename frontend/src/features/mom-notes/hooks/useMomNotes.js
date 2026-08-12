@@ -18,5 +18,15 @@ export function useMomNotes(parentType, parentId) {
     await reload();
   };
 
-  return { notes, loading, addNote };
+  const updateNote = async (id, content) => {
+    await api.updateMomNote(id, content);
+    await reload();
+  };
+
+  const deleteNote = async (id) => {
+    await api.deleteMomNote(id);
+    await reload();
+  };
+
+  return { notes, loading, addNote, updateNote, deleteNote };
 }
