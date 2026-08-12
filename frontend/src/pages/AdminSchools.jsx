@@ -1,10 +1,12 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useAllSchools } from '../features/schools/hooks/useAllSchools';
 import AdminSchoolCard from '../features/schools/components/AdminSchoolCard';
 import SchoolDetailModal from '../features/schools/components/SchoolDetailModal';
 import StatCard from '../components/StatCard';
 import SearchFilterBar from '../components/SearchFilterBar';
 import Pagination from '../components/Pagination';
+import { api } from '../services/api';
+import { isThisWeek } from '../utils/weekOptions';
 import { STATES, BRANCHES, SCHOOL_TYPES, LEGALITY_STATUSES } from '../utils/constants';
 
 export default function AdminSchools() {
@@ -19,6 +21,17 @@ export default function AdminSchools() {
   const [pageSize, setPageSize] = useState(12);
 
   const [selected, setSelected] = useState(null);
+
+  const [latestUpdates, setLatestUpdates] = useState(null); // { [schoolId]: latestCreatedAt } | null while loading
+
+  useEffect(() => {
+    api.getLatestMomNotesByParentType('school').then(setLatestUpdates);
+  }, []);
+
+  const notUpdatedThisWeek = useMemo(() => {
+    if (!latestUpdates) return [];
+    return schools.filter((s) => !isThisWeek(latestUpdates[s.id]));
+  }, [schools, latestUpdates]);
 
   const stats = useMemo(() => {
     const legal = schools.filter((s) => s.legality_status?.startsWith('Legal')).length;
@@ -64,6 +77,40 @@ export default function AdminSchools() {
         <StatCard icon={<AlertIcon />} label="Not Legal" value={stats.notLegal} sublabel={`${pct(stats.notLegal, stats.total)}% of total`} color="purple" />
       </div>
 
+      <div className="bg-white rounded-2xl border border-slate-200 p-6 mb-6">
+        <div className="flex items-center gap-2 mb-1">
+          <h2 className="font-display font-semibold text-navy-900 text-sm">PICs Not Updated This Week</h2>
+          {latestUpdates && (
+            <span className="text-xs font-medium bg-red-50 text-red-600 rounded-full px-2 py-0.5">
+              {notUpdatedThisWeek.length}
+            </span>
+          )}
+        </div>
+        <p className="text-xs text-slate-400 mb-4">Schools whose PIC hasn't logged a Weekly Update entry this week.</p>
+
+        {!latestUpdates ? (
+          <p className="text-sm text-slate-400">Checking weekly updates…</p>
+        ) : notUpdatedThisWeek.length === 0 ? (
+          <p className="text-sm text-emerald-600">Every PIC has logged an update this week.</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 max-h-72 overflow-y-auto pr-1">
+            {notUpdatedThisWeek.map((s) => (
+              <button
+                key={s.id}
+                onClick={() => setSelected(s)}
+                className="text-left bg-slate-50 hover:bg-slate-100 rounded-lg px-3 py-2.5 transition-colors"
+              >
+                <p className="text-sm font-medium text-navy-900 truncate">{s.pic_name}</p>
+                <p className="text-xs text-slate-500 truncate">{s.school_name}</p>
+                <p className="text-xs text-slate-400 mt-1">
+                  {latestUpdates[s.id] ? `Last update ${formatShortDate(latestUpdates[s.id])}` : 'No updates yet'}
+                </p>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
       <div className="mb-6">
         <SearchFilterBar
           search={search}
@@ -105,6 +152,11 @@ export default function AdminSchools() {
 function pct(n, total) {
   if (!total) return '0.0';
   return ((n / total) * 100).toFixed(1);
+}
+
+function formatShortDate(iso) {
+  if (!iso) return '';
+  return new Date(iso).toLocaleDateString('en-MY', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
 function SchoolIcon() {

@@ -78,3 +78,11 @@ export function isInWeek(date, key) {
   const d = new Date(date);
   return d >= start && d <= end;
 }
+
+/** True if `date` falls within the current (this week's) Sunday–Saturday range. */
+export function isThisWeek(date) {
+  if (!date) return false;
+  const { start, end } = getWeekRange(new Date());
+  const d = new Date(date);
+  return d >= start && d <= end;
+}

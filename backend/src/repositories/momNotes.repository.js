@@ -24,4 +24,15 @@ export const momNotesRepository = {
   async remove(id) {
     await MomNote.findByIdAndDelete(id);
   },
+
+  /** Returns { [parent_id]: latestCreatedAt } for every parent of this type that has at least one entry. */
+  async findLatestByParentType(parentType) {
+    const rows = await MomNote.aggregate([
+      { $match: { parent_type: parentType } },
+      { $group: { _id: '$parent_id', latest: { $max: '$created_at' } } },
+    ]);
+    const map = {};
+    for (const row of rows) map[row._id.toString()] = row.latest;
+    return map;
+  },
 };

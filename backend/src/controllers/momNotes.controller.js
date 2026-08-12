@@ -18,4 +18,8 @@ export const momNotesController = {
     await momNotesService.remove(req.params.id);
     res.status(204).send();
   },
+
+  latestByParentType: async (req, res) => {
+    res.json(await momNotesService.latestByParentType(req.params.parentType));
+  },
 };

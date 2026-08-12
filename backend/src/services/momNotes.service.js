@@ -1,5 +1,5 @@
 import { momNotesRepository } from '../repositories/momNotes.repository.js';
-import { assertParentExists } from '../utils/parentResolver.js';
+import { assertParentExists, resolveParentType } from '../utils/parentResolver.js';
 import { validateAddMomNote } from '../validators/momNotes.validator.js';
 import { ApiError } from '../utils/ApiError.js';
 
@@ -26,5 +26,11 @@ export const momNotesService = {
     const note = await momNotesRepository.findById(id);
     if (!note) throw new ApiError(404, 'Entry not found');
     await momNotesRepository.remove(id);
+  },
+
+  /** { [parentId]: latestCreatedAt } for every parent of this type that has at least one entry. */
+  async latestByParentType(parentType) {
+    const { refName } = resolveParentType(parentType);
+    return momNotesRepository.findLatestByParentType(refName);
   },
 };
