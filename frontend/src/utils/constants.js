@@ -46,3 +46,5 @@ export const ALUMNI_STATUS_CHART_COLORS = {
 };
 
 export const SCHOOL_TYPE_OPTIONS = ['Harian', 'Asrama', 'Harian & Asrama'];
+
+export const PROGRAM_TYPES = ['Kepimpinan', 'Kerohanian', 'Akademik', 'Lain-lain'];

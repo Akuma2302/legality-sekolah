@@ -71,4 +71,8 @@ export const api = {
     request(`/api/mom-notes/${id}`, { method: 'PUT', body: JSON.stringify({ content }) }),
   deleteMomNote: (id) => request(`/api/mom-notes/${id}`, { method: 'DELETE' }),
   getLatestMomNotesByParentType: (parentType) => request(`/api/mom-notes/latest/${parentType}`),
+
+  // Program Sekolah submission — sends to Telegram on the backend
+  submitProgramForm: (payload) =>
+    request('/api/program-submissions', { method: 'POST', body: JSON.stringify(payload) }),
 };
