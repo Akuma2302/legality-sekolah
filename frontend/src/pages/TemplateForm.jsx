@@ -1,25 +1,30 @@
 import { useState } from 'react';
 import { api } from '../services/api';
-import { PROGRAM_TYPES } from '../utils/constants';
+import { PROGRAM_TYPES, BRANCHES } from '../utils/constants';
 
 const emptyForm = {
   virality_ack_before_1: false,
   virality_ack_before_2: false,
   virality_ack_after_1: false,
   school_name: '',
+  school_branch: BRANCHES[0],
   program_date: '',
   program_type: PROGRAM_TYPES[0],
   start_time: '',
   end_time: '',
   teacher_on_duty: '',
+  teacher_position: '',
   students_involved: ['', '', '', '', ''],
   total_manpower: '',
   needs_additional_manpower: false,
   additional_manpower_count: '',
   sheet_program_url: '',
   main_pic_telegram: '',
+  main_pic_branch: BRANCHES[0],
   legality_pic_telegram: '',
+  legality_pic_branch: BRANCHES[0],
   virality_pic_telegram: '',
+  virality_pic_branch: BRANCHES[0],
 };
 
 export default function TemplateForm() {
@@ -136,6 +141,11 @@ export default function TemplateForm() {
             <Field label="Nama Sekolah">
               <input className="input" value={form.school_name} onChange={(e) => field('school_name', e.target.value)} />
             </Field>
+            <Field label="Cawangan Sekolah">
+              <select className="input" value={form.school_branch} onChange={(e) => field('school_branch', e.target.value)}>
+                {BRANCHES.map((b) => <option key={b} value={b}>{b}</option>)}
+              </select>
+            </Field>
             <Field label="Tarikh Program">
               <input type="date" className="input" value={form.program_date} onChange={(e) => field('program_date', e.target.value)} />
             </Field>
@@ -146,6 +156,9 @@ export default function TemplateForm() {
             </Field>
             <Field label="Guru Bertugas">
               <input className="input" value={form.teacher_on_duty} onChange={(e) => field('teacher_on_duty', e.target.value)} />
+            </Field>
+            <Field label="Jawatan Guru">
+              <input className="input" value={form.teacher_position} onChange={(e) => field('teacher_position', e.target.value)} />
             </Field>
             <Field label="Masa Mula">
               <input type="time" className="input" value={form.start_time} onChange={(e) => field('start_time', e.target.value)} />
@@ -202,16 +215,37 @@ export default function TemplateForm() {
 
           <div className="pt-2 border-t border-slate-100">
             <p className="text-sm font-medium text-navy-900 mb-3">PIC Program</p>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <Field label="Main PIC Program">
-                <input className="input" placeholder="@telegram" value={form.main_pic_telegram} onChange={(e) => field('main_pic_telegram', e.target.value)} />
-              </Field>
-              <Field label="PIC Legality">
-                <input className="input" placeholder="@telegram" value={form.legality_pic_telegram} onChange={(e) => field('legality_pic_telegram', e.target.value)} />
-              </Field>
-              <Field label="PIC Virality">
-                <input className="input" placeholder="@telegram" value={form.virality_pic_telegram} onChange={(e) => field('virality_pic_telegram', e.target.value)} />
-              </Field>
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Field label="Main PIC Program">
+                  <input className="input" placeholder="@telegram" value={form.main_pic_telegram} onChange={(e) => field('main_pic_telegram', e.target.value)} />
+                </Field>
+                <Field label="Kader Cawangan">
+                  <select className="input" value={form.main_pic_branch} onChange={(e) => field('main_pic_branch', e.target.value)}>
+                    {BRANCHES.map((b) => <option key={b} value={b}>{b}</option>)}
+                  </select>
+                </Field>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Field label="PIC Legality">
+                  <input className="input" placeholder="@telegram" value={form.legality_pic_telegram} onChange={(e) => field('legality_pic_telegram', e.target.value)} />
+                </Field>
+                <Field label="Kader Cawangan">
+                  <select className="input" value={form.legality_pic_branch} onChange={(e) => field('legality_pic_branch', e.target.value)}>
+                    {BRANCHES.map((b) => <option key={b} value={b}>{b}</option>)}
+                  </select>
+                </Field>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Field label="PIC Virality">
+                  <input className="input" placeholder="@telegram" value={form.virality_pic_telegram} onChange={(e) => field('virality_pic_telegram', e.target.value)} />
+                </Field>
+                <Field label="Kader Cawangan">
+                  <select className="input" value={form.virality_pic_branch} onChange={(e) => field('virality_pic_branch', e.target.value)}>
+                    {BRANCHES.map((b) => <option key={b} value={b}>{b}</option>)}
+                  </select>
+                </Field>
+              </div>
             </div>
           </div>
         </section>

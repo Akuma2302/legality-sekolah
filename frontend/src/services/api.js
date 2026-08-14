@@ -75,4 +75,6 @@ export const api = {
   // Program Sekolah submission — sends to Telegram on the backend
   submitProgramForm: (payload) =>
     request('/api/program-submissions', { method: 'POST', body: JSON.stringify(payload) }),
+  // Admin only — requires an admin login token
+  getProgramSubmissions: () => request('/api/program-submissions'),
 };

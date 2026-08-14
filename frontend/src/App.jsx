@@ -16,6 +16,7 @@ import TDSChart from './pages/TDSChart';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminSchools from './pages/AdminSchools';
 import AdminAlumni from './pages/AdminAlumni';
+import AdminSchoolProgram from './pages/AdminSchoolProgram';
 
 export default function App() {
   return (
@@ -45,6 +46,7 @@ export default function App() {
         <Route index element={<AdminDashboard />} />
         <Route path="legality/schools" element={<AdminSchools />} />
         <Route path="legality/alumni" element={<AdminAlumni />} />
+        <Route path="school-program" element={<AdminSchoolProgram />} />
       </Route>
     </Routes>
   );

@@ -22,6 +22,11 @@ const icons = {
       <path d="M9 18l6-6-6-6" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   ),
+  schoolProgram: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <path d="M6 2h9l5 5v15H6z" /><path d="M15 2v5h5" /><path d="M9 13h6M9 17h6" strokeLinecap="round" />
+    </svg>
+  ),
 };
 
 const legalityLinks = [
@@ -103,6 +108,18 @@ export default function AdminLayout() {
             </div>
           )}
         </div>
+
+        <NavLink
+          to="/admin/school-program"
+          className={({ isActive }) =>
+            `flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+              isActive ? 'bg-navy-800 text-white' : 'text-navy-300 hover:bg-navy-900 hover:text-white'
+            }`
+          }
+        >
+          {icons.schoolProgram}
+          School Program
+        </NavLink>
       </nav>
 
       <div className="px-3 py-4 border-t border-navy-800">
